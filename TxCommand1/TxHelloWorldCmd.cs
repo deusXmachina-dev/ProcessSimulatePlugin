@@ -10,7 +10,7 @@ namespace TxCommand1
 {
     public class TxHelloWorldCmd : TxButtonCommand
     {
-        public override string Category => StringTable.Category;
+        public override string Category => StringTable.CATEGORY;
 
         public override string Name => StringTable.NAME;
 
@@ -20,4 +20,4 @@ namespace TxCommand1
             robotForm.Show();
         }
     }
-}
+}   

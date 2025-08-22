@@ -63,9 +63,18 @@ namespace TxCommand1 {
         /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
-        internal static string Category {
+        internal static string CATEGORY {
             get {
-                return ResourceManager.GetString("Category", resourceCulture);
+                return ResourceManager.GetString("CATEGORY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model objects.
+        /// </summary>
+        internal static string MODEL_OBJECTS_COMMAND_NAME {
+            get {
+                return ResourceManager.GetString("MODEL_OBJECTS_COMMAND_NAME", resourceCulture);
             }
         }
         
