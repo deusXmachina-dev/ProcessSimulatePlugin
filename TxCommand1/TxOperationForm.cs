@@ -1,11 +1,14 @@
 ﻿using System;
 using Tecnomatix.Engineering;
+using Tecnomatix.Engineering.Olp;
 using Tecnomatix.Engineering.Ui;
 
 namespace TxCommand1
 {
     public partial class TxOperationForm : TxForm
     {
+        private ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
+        
         public TxOperationForm()
         {
             InitializeComponent();
@@ -21,9 +24,9 @@ namespace TxCommand1
             if (selectedObejcts.Count > 0)
             {
                 ITxObject selectedObject = selectedObejcts[0];
-                if (selectedObject is TxRobot robot)
+                if (selectedObject is ITxOperation operation)
                 {
-                    _operationPicker.Object = robot;
+                    _operationPicker.Object = operation;
                     _updateUI();
                 }
             }
@@ -31,32 +34,34 @@ namespace TxCommand1
             _operationPicker.Focus();
         }
 
-        private void _robotPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
+        private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
             _updateUI();
         }
 
-        private void _robotPicker_TypeValid(object sender, EventArgs e)
+        private void _operationPicker_TypeValid(object sender, EventArgs e)
         {
             _updateUI();
         }
 
-        private void _robotPicker_TypeInvalid(object sender, EventArgs e)
+        private void _operationPicker_TypeInvalid(object sender, EventArgs e)
         {
             _updateUI();
         }
 
         private void _updateUI()
         {
-            // we'll need operation picker instead of robot picker
             if (_operationPicker.Object is ITxOperation operation)
             {
                 // log operation name
                 _txtOperationName.Text = operation.Name;
+                // log operation type
+                _txtOperationType.Text = operation.GetType().ToString();
             }
             else
             {
                 _txtOperationName.Text = string.Empty;
+                _txtOperationType.Text = string.Empty;
             }
         }
 

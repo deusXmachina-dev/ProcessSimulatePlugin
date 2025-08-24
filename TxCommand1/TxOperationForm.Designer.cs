@@ -33,6 +33,8 @@
             this._btnClose = new System.Windows.Forms.Button();
             this._txtOperationName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this._txtOperationType = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -59,9 +61,9 @@
             this._operationPicker.Size = new System.Drawing.Size(149, 20);
             this._operationPicker.TabIndex = 3;
             this._operationPicker.ValidatorType = Tecnomatix.Engineering.Ui.TxValidatorType.Operation;
-            this._operationPicker.TypeInvalid += new System.EventHandler(this._robotPicker_TypeInvalid);
-            this._operationPicker.TypeValid += new System.EventHandler(this._robotPicker_TypeValid);
-            this._operationPicker.Picked += new Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl_PickedEventHandler(this._robotPicker_Picked);
+            this._operationPicker.TypeInvalid += new System.EventHandler(this._operationPicker_TypeInvalid);
+            this._operationPicker.TypeValid += new System.EventHandler(this._operationPicker_TypeValid);
+            this._operationPicker.Picked += new Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl_PickedEventHandler(this._operationPicker_Picked);
             // 
             // _btnClose
             // 
@@ -90,11 +92,30 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "Name";
             // 
+            // _txtOperationType
+            // 
+            this._txtOperationType.Location = new System.Drawing.Point(171, 85);
+            this._txtOperationType.Name = "_txtOperationType";
+            this._txtOperationType.Size = new System.Drawing.Size(149, 22);
+            this._txtOperationType.TabIndex = 9;
+            this._txtOperationType.ReadOnly = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 85);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 17);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Type";
+            // 
             // TxOperationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(351, 167);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this._txtOperationType);
             this.Controls.Add(this.label2);
             this.Controls.Add(this._txtOperationName);
             this.Controls.Add(this._btnClose);
@@ -112,8 +133,10 @@
         }
 
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
 
         private System.Windows.Forms.TextBox _txtOperationName;
+        private System.Windows.Forms.TextBox _txtOperationType;
 
         #endregion
 
