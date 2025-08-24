@@ -16,7 +16,7 @@ namespace TxCommand1
 
         public override void Execute(object cmdParams)
         {
-            TxRobotTCPForm robotForm = new TxRobotTCPForm();
+            TxOperationForm robotForm = new TxOperationForm();
             robotForm.Show();
         }
     }
