@@ -62,22 +62,21 @@ namespace TxCommand1
                 if (operation is ITxObjectCollection col)
                 {
                     TxObjectList leafOperations = col.GetAllDescendants(new TxTypeFilter(
-                        includedTypes: new [] { typeof(ITxRoboticOperation) },
+                        includedTypes: new [] { typeof(TxRoboticViaLocationOperation) },
                         excludedTypes: new [] { typeof(ITxObjectCollection) }));
-                    foreach (ITxRoboticOperation leafOp in leafOperations)
+                    foreach (TxRoboticViaLocationOperation leafOp in leafOperations)
                     {
                         TxMotionType motionType = _rcsService.GetLocationMotionType(leafOp);
-                        
-                        // , TCPF: {(tcpf != null ? tcpf.Name : "N/A")}
-                        sb.AppendLine($"Leaf Operation: {leafOp.Name}, Motion Type: {motionType.ToString()}");
+                        var tcpf = leafOp.AbsoluteLocation;
+                        var a = 1;
+                        sb.AppendLine($"{a}Leaf Operation: {leafOp.Name}, TCPF translation: {tcpf.Translation}, TCPF rotation: {tcpf.RotationRPY_XYZ}, Motion Type: {motionType.ToString()}");
                     }
                 }
-                else
+                else if (operation is TxRoboticViaLocationOperation leafOp)
                 {
-                    TxMotionType motionType = _rcsService.GetLocationMotionType(operation);
-                        
-                    // , TCPF: {(tcpf != null ? tcpf.Name : "N/A")}
-                    sb.AppendLine($"Leaf Operation: {operation.Name}, Motion Type: {motionType.ToString()}");
+                    TxMotionType motionType = _rcsService.GetLocationMotionType(leafOp);
+                    var tcpf = leafOp.AbsoluteLocation;
+                    sb.AppendLine($"Leaf Operation: {leafOp.Name}, TCPF translation: {tcpf.Translation}, TCPF rotation: {tcpf.RotationRPY_XYZ}, Motion Type: {motionType.ToString()}");
                 }
                 
                 // log operation name
