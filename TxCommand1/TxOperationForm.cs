@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
@@ -28,7 +29,7 @@ namespace TxCommand1
                 if (selectedObject is ITxOperation operation)
                 {
                     _operationPicker.Object = operation;
-                    _updateUI();
+                    _runSimpleSimulation();
                 }
             }
 
@@ -37,58 +38,41 @@ namespace TxCommand1
 
         private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
-            _updateUI();
+            _runSimpleSimulation();
         }
 
         private void _operationPicker_TypeValid(object sender, EventArgs e)
         {
-            _updateUI();
+            _runSimpleSimulation();
         }
 
         private void _operationPicker_TypeInvalid(object sender, EventArgs e)
         {
-            _updateUI();
+            _runSimpleSimulation();
         }
 
-        private void _updateUI()
+        private void _runSimpleSimulation()
         {
-            if (_operationPicker.Object is ITxRoboticOperation operation)
+            var leafOperations = _getLeafOperations(_operationPicker.Object);
+        }
+        
+        private TxObjectList<TxRoboticViaLocationOperation> _getLeafOperations(ITxObject operation)
+        {
+            var result = new TxObjectList<TxRoboticViaLocationOperation>();
+            if (operation is ITxObjectCollection col)
             {
-                // todo: implement traversal of all the children of operation
-                // after all the leaf operations are found, log tcpf and motion type for each
-
-                StringBuilder sb = new StringBuilder();
+                TxObjectList descendants = col.GetAllDescendants(new TxTypeFilter(
+                    includedTypes: new [] { typeof(TxRoboticViaLocationOperation) },
+                    excludedTypes: new [] { typeof(ITxObjectCollection) }));
                 
-                if (operation is ITxObjectCollection col)
-                {
-                    TxObjectList leafOperations = col.GetAllDescendants(new TxTypeFilter(
-                        includedTypes: new [] { typeof(TxRoboticViaLocationOperation) },
-                        excludedTypes: new [] { typeof(ITxObjectCollection) }));
-                    foreach (TxRoboticViaLocationOperation leafOp in leafOperations)
-                    {
-                        TxMotionType motionType = _rcsService.GetLocationMotionType(leafOp);
-                        var tcpf = leafOp.AbsoluteLocation;
-                        var a = 1;
-                        sb.AppendLine($"{a}Leaf Operation: {leafOp.Name}, TCPF translation: {tcpf.Translation}, TCPF rotation: {tcpf.RotationRPY_XYZ}, Motion Type: {motionType.ToString()}");
-                    }
-                }
-                else if (operation is TxRoboticViaLocationOperation leafOp)
-                {
-                    TxMotionType motionType = _rcsService.GetLocationMotionType(leafOp);
-                    var tcpf = leafOp.AbsoluteLocation;
-                    sb.AppendLine($"Leaf Operation: {leafOp.Name}, TCPF translation: {tcpf.Translation}, TCPF rotation: {tcpf.RotationRPY_XYZ}, Motion Type: {motionType.ToString()}");
-                }
-                
-                // log operation name
-                _txtOperationName.Text = sb.ToString();
-                // log operation type
-                _txtOperationType.Text = operation.GetType().ToString();
+                foreach (TxRoboticViaLocationOperation leafOp in descendants) result.Add(leafOp);
             }
-            else
+            else if (operation is TxRoboticViaLocationOperation leafOp)
             {
-                _txtOperationName.Text = string.Empty;
-                _txtOperationType.Text = string.Empty;
+                result.Add(leafOp);
             }
+            
+            return result;
         }
 
         private void _btnClose_Click(object sender, EventArgs e)
