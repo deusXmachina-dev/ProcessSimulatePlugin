@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
 using Tecnomatix.Engineering.Ui;
@@ -51,10 +52,36 @@ namespace TxCommand1
 
         private void _updateUI()
         {
-            if (_operationPicker.Object is ITxOperation operation)
+            if (_operationPicker.Object is ITxRoboticOperation operation)
             {
+                // todo: implement traversal of all the children of operation
+                // after all the leaf operations are found, log tcpf and motion type for each
+
+                StringBuilder sb = new StringBuilder();
+                
+                if (operation is ITxObjectCollection col)
+                {
+                    TxObjectList leafOperations = col.GetAllDescendants(new TxTypeFilter(
+                        includedTypes: new [] { typeof(ITxRoboticOperation) },
+                        excludedTypes: new [] { typeof(ITxObjectCollection) }));
+                    foreach (ITxRoboticOperation leafOp in leafOperations)
+                    {
+                        TxMotionType motionType = _rcsService.GetLocationMotionType(leafOp);
+                        
+                        // , TCPF: {(tcpf != null ? tcpf.Name : "N/A")}
+                        sb.AppendLine($"Leaf Operation: {leafOp.Name}, Motion Type: {motionType.ToString()}");
+                    }
+                }
+                else
+                {
+                    TxMotionType motionType = _rcsService.GetLocationMotionType(operation);
+                        
+                    // , TCPF: {(tcpf != null ? tcpf.Name : "N/A")}
+                    sb.AppendLine($"Leaf Operation: {operation.Name}, Motion Type: {motionType.ToString()}");
+                }
+                
                 // log operation name
-                _txtOperationName.Text = operation.Name;
+                _txtOperationName.Text = sb.ToString();
                 // log operation type
                 _txtOperationType.Text = operation.GetType().ToString();
             }
