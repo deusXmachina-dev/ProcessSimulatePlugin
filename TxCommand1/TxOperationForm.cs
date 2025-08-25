@@ -29,7 +29,7 @@ namespace TxCommand1
                 if (selectedObject is ITxOperation operation)
                 {
                     _operationPicker.Object = operation;
-                    _runSimpleSimulation();
+                    _demo();
                 }
             }
 
@@ -38,22 +38,47 @@ namespace TxCommand1
 
         private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
-            _runSimpleSimulation();
+            _demo();
         }
 
         private void _operationPicker_TypeValid(object sender, EventArgs e)
         {
-            _runSimpleSimulation();
+            _demo();
         }
 
         private void _operationPicker_TypeInvalid(object sender, EventArgs e)
         {
+            _demo();
+        }
+
+        private void _demo()
+        {
+            
+            TxObjectList<TxRoboticViaLocationOperation> leafOperations = _getLeafOperations(_operationPicker.Object);
+            foreach (var op in leafOperations)
+            {
+                Debug.WriteLine($"Name: {op.Name}, Duration: {op.Duration}");
+            }
             _runSimpleSimulation();
+            foreach (var op in leafOperations)
+            {
+                Debug.WriteLine($"Name: {op.Name}, Duration: {op.Duration}");
+            }
         }
 
         private void _runSimpleSimulation()
         {
-            var leafOperations = _getLeafOperations(_operationPicker.Object);
+            ITxOperation op = _operationPicker.Object as ITxOperation;
+            TxSimulationPlayer simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
+
+            var oldOp = TxApplication.ActiveDocument.CurrentOperation;
+            
+            TxApplication.ActiveDocument.CurrentOperation = op;
+            simPlayer.Rewind();
+            simPlayer.PlaySilently();
+            simPlayer.ResetToDefaultSetting();
+            
+            TxApplication.ActiveDocument.CurrentOperation = oldOp;
         }
         
         private TxObjectList<TxRoboticViaLocationOperation> _getLeafOperations(ITxObject operation)
