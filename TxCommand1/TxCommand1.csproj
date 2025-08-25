@@ -71,6 +71,8 @@
     <Compile Include="TxOperationForm.Designer.cs">
       <DependentUpon>TxOperationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OperationResult.cs" />
+    <Compile Include="OperationResultCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="StringTable.resx">

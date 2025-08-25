@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text;
 using Tecnomatix.Engineering;
-using Tecnomatix.Engineering.Olp;
 using Tecnomatix.Engineering.Ui;
 
 namespace TxCommand1
 {
     public partial class TxOperationForm : TxForm
     {
-        private ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
-        
         public TxOperationForm()
         {
             InitializeComponent();
@@ -20,12 +16,12 @@ namespace TxCommand1
         {
             base.OnInitTxForm();
 
-            TxObjectList selectedObejcts = TxApplication.ActiveSelection.GetItems();
+            TxObjectList selectedObjects = TxApplication.ActiveSelection.GetItems();
             // this will have to be filtered by path operations
             
-            if (selectedObejcts.Count > 0)
+            if (selectedObjects.Count > 0)
             {
-                ITxObject selectedObject = selectedObejcts[0];
+                ITxObject selectedObject = selectedObjects[0];
                 if (selectedObject is ITxOperation operation)
                 {
                     _operationPicker.Object = operation;
@@ -53,51 +49,137 @@ namespace TxCommand1
 
         private void _demo()
         {
-            
-            TxObjectList<TxRoboticViaLocationOperation> leafOperations = _getLeafOperations(_operationPicker.Object);
-            foreach (var op in leafOperations)
+            try
             {
-                Debug.WriteLine($"Name: {op.Name}, Duration: {op.Duration}");
+                // Use the new method to run simulation and get durations
+                var operationResults = RunSimulationAndGetDurations();
+                
+                // Output the results using the collection's ToString method
+                Debug.WriteLine("=== Simulation Results ===");
+                Debug.WriteLine(operationResults.ToString());
             }
-            _runSimpleSimulation();
-            foreach (var op in leafOperations)
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Name: {op.Name}, Duration: {op.Duration}");
+                Debug.WriteLine($"Error during simulation: {ex.Message}");
             }
-        }
-
-        private void _runSimpleSimulation()
-        {
-            ITxOperation op = _operationPicker.Object as ITxOperation;
-            TxSimulationPlayer simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
-
-            var oldOp = TxApplication.ActiveDocument.CurrentOperation;
-            
-            TxApplication.ActiveDocument.CurrentOperation = op;
-            simPlayer.Rewind();
-            simPlayer.PlaySilently();
-            simPlayer.ResetToDefaultSetting();
-            
-            TxApplication.ActiveDocument.CurrentOperation = oldOp;
         }
         
-        private TxObjectList<TxRoboticViaLocationOperation> _getLeafOperations(ITxObject operation)
+        /// <summary>
+        /// Gets all leaf robotic via location operations from the specified operation.
+        /// If the operation is a collection, recursively searches for all descendant leaf operations.
+        /// If the operation is already a leaf operation, returns it directly.
+        /// </summary>
+        /// <param name="operation">The operation to extract leaf operations from. Can be a single operation or a collection.</param>
+        /// <returns>A list of all TxRoboticViaLocationOperation instances found as leaf operations.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the operation parameter is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when there's an error accessing operation properties or descendants.</exception>
+        private TxObjectList<TxRoboticViaLocationOperation> GetLeafOperations(ITxObject operation)
         {
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
+
             var result = new TxObjectList<TxRoboticViaLocationOperation>();
-            if (operation is ITxObjectCollection col)
+            if (operation is ITxObjectCollection collection)
             {
-                TxObjectList descendants = col.GetAllDescendants(new TxTypeFilter(
-                    includedTypes: new [] { typeof(TxRoboticViaLocationOperation) },
-                    excludedTypes: new [] { typeof(ITxObjectCollection) }));
+                TxObjectList descendants = collection.GetAllDescendants(new TxTypeFilter(
+                    includedTypes: new[] { typeof(TxRoboticViaLocationOperation) },
+                    excludedTypes: new[] { typeof(ITxObjectCollection) }));
                 
-                foreach (TxRoboticViaLocationOperation leafOp in descendants) result.Add(leafOp);
+                if (descendants != null)
+                {
+                    foreach (var o in descendants)
+                    {
+                        var leafOperation = (TxRoboticViaLocationOperation)o;
+                        if (leafOperation != null)
+                        {
+                            result.Add(leafOperation);
+                        }
+                    }
+                }
+ 
             }
-            else if (operation is TxRoboticViaLocationOperation leafOp)
+            else if (operation is TxRoboticViaLocationOperation leafOperation)
             {
-                result.Add(leafOp);
+                result.Add(leafOperation);
             }
-            
             return result;
+        }
+
+        /// <summary>
+        /// Runs a simulation for the specified operation and returns a collection of operation results
+        /// containing the durations of all leaf operations after simulation.
+        /// </summary>
+        /// <param name="operation">The operation to simulate. Can be a single operation or a collection of operations.</param>
+        /// <returns>An OperationResultCollection containing the name and duration of each leaf operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the operation is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when simulation fails or no active document is available.</exception>
+        private OperationResultCollection RunSimulationAndGetDurations(ITxOperation operation)
+        {
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
+
+            if (TxApplication.ActiveDocument == null)
+                throw new InvalidOperationException("No active document available for simulation.");
+
+            var results = new OperationResultCollection();
+            
+            try
+            {
+                // Store the original current operation to restore later
+                var originalCurrentOperation = TxApplication.ActiveDocument.CurrentOperation;
+                
+                try
+                {
+                    
+                    // Set the operation as current and run a simulation
+                    TxApplication.ActiveDocument.CurrentOperation = operation;
+                    
+                    var simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
+                    if (simPlayer == null)
+                        throw new InvalidOperationException("Simulation player is not available.");
+
+                    // Run the simulation
+                    simPlayer.Rewind();
+                    simPlayer.PlaySilently();
+                    simPlayer.ResetToDefaultSetting();
+                    
+                    // Collect durations after simulation
+                    var leafOperations = GetLeafOperations(operation);
+                    foreach (var leafOp in leafOperations)
+                    {
+                        if (leafOp != null && !string.IsNullOrEmpty(leafOp.Name))
+                        {
+                            results.Add(leafOp.Name, leafOp.Duration);
+                        }
+                    }
+                }
+                finally
+                {
+                    // Always restore the original current operation
+                    TxApplication.ActiveDocument.CurrentOperation = originalCurrentOperation;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to run simulation for operation '{operation.Name}': {ex.Message}", ex);
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Runs a simulation for the currently selected operation in the operation picker and returns
+        /// a collection of operation results containing the durations of all leaf operations.
+        /// </summary>
+        /// <returns>An OperationResultCollection containing the name and duration of each leaf operation.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when no operation is selected or simulation fails.</exception>
+        private OperationResultCollection RunSimulationAndGetDurations()
+        {
+            var operation = _operationPicker.Object as ITxOperation;
+            if (operation == null)
+                throw new InvalidOperationException("No valid operation selected in the operation picker.");
+
+            return RunSimulationAndGetDurations(operation);
         }
 
         private void _btnClose_Click(object sender, EventArgs e)
