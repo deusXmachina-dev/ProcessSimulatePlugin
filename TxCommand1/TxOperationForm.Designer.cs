@@ -33,6 +33,7 @@
             this._btnClose = new System.Windows.Forms.Button();
             this._btnOptimize = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.txNumericEditBoxCtrl1 = new Tecnomatix.Engineering.Ui.TxNumericEditBoxCtrl();
             this.SuspendLayout();
             // 
             // label1
@@ -65,7 +66,7 @@
             // 
             // _btnClose
             // 
-            this._btnClose.Location = new System.Drawing.Point(245, 150);
+            this._btnClose.Location = new System.Drawing.Point(245, 108);
             this._btnClose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this._btnClose.Name = "_btnClose";
             this._btnClose.Size = new System.Drawing.Size(75, 23);
@@ -76,7 +77,7 @@
             // 
             // _btnOptimize
             // 
-            this._btnOptimize.Location = new System.Drawing.Point(147, 150);
+            this._btnOptimize.Location = new System.Drawing.Point(147, 108);
             this._btnOptimize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this._btnOptimize.Name = "_btnOptimize";
             this._btnOptimize.Size = new System.Drawing.Size(75, 23);
@@ -93,11 +94,29 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "Target duration:";
             // 
+            // txNumericEditBoxCtrl1
+            // 
+            this.txNumericEditBoxCtrl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.txNumericEditBoxCtrl1.Location = new System.Drawing.Point(147, 51);
+            this.txNumericEditBoxCtrl1.LowerBound = -7.92281525142643E+18D;
+            this.txNumericEditBoxCtrl1.Name = "txNumericEditBoxCtrl1";
+            this.txNumericEditBoxCtrl1.ReadOnly = false;
+            this.txNumericEditBoxCtrl1.Size = new System.Drawing.Size(173, 22);
+            this.txNumericEditBoxCtrl1.StepSize = 1D;
+            this.txNumericEditBoxCtrl1.TabIndex = 9;
+            this.txNumericEditBoxCtrl1.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.txNumericEditBoxCtrl1.ThousandsSeparator = false;
+            this.txNumericEditBoxCtrl1.UpperBound = 7.92281525142643E+18D;
+            this.txNumericEditBoxCtrl1.UseDecimalPlacesFromOption = true;
+            this.txNumericEditBoxCtrl1.Value = 0D;
+            this.txNumericEditBoxCtrl1.ValueType = Tecnomatix.Engineering.Ui.TxNumericEditValueType.Linear;
+            // 
             // TxOperationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(376, 184);
+            this.ClientSize = new System.Drawing.Size(368, 155);
+            this.Controls.Add(this.txNumericEditBoxCtrl1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this._btnOptimize);
             this.Controls.Add(this._btnClose);
@@ -113,6 +132,8 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private Tecnomatix.Engineering.Ui.TxNumericEditBoxCtrl txNumericEditBoxCtrl1;
 
         private System.Windows.Forms.Label label2;
 
