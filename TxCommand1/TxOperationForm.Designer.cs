@@ -31,6 +31,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this._operationPicker = new Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl();
             this._btnClose = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this._programPicker = new Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl();
             this.SuspendLayout();
             // 
             // label1
@@ -63,7 +65,7 @@
             // 
             // _btnClose
             // 
-            this._btnClose.Location = new System.Drawing.Point(245, 58);
+            this._btnClose.Location = new System.Drawing.Point(245, 82);
             this._btnClose.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this._btnClose.Name = "_btnClose";
             this._btnClose.Size = new System.Drawing.Size(75, 23);
@@ -72,11 +74,38 @@
             this._btnClose.UseVisualStyleBackColor = true;
             this._btnClose.Click += new System.EventHandler(this._btnClose_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 47);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(62, 16);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Program:";
+            // 
+            // _programPicker
+            // 
+            this._programPicker.KeepFaceEmphasizedWhenControlIsNotFocused = true;
+            this._programPicker.ListenToPick = true;
+            this._programPicker.Location = new System.Drawing.Point(171, 47);
+            this._programPicker.Name = "_programPicker";
+            this._programPicker.Object = null;
+            this._programPicker.PickAndClear = false;
+            this._programPicker.PickLevel = Tecnomatix.Engineering.Ui.TxPickLevel.Component;
+            this._programPicker.PickOnly = false;
+            this._programPicker.ReadOnly = false;
+            this._programPicker.Size = new System.Drawing.Size(148, 30);
+            this._programPicker.TabIndex = 8;
+            this._programPicker.ValidatorType = Tecnomatix.Engineering.Ui.TxValidatorType.AnyLocatableObject;
+            this._programPicker.Picked += new Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl_PickedEventHandler(this._programPicker_Picked);
+            // 
             // TxOperationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(351, 108);
+            this.ClientSize = new System.Drawing.Size(351, 166);
+            this.Controls.Add(this._programPicker);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this._btnClose);
             this.Controls.Add(this._operationPicker);
             this.Controls.Add(this.label1);
@@ -90,6 +119,10 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl _programPicker;
+
+        private System.Windows.Forms.Label label2;
 
         #endregion
 

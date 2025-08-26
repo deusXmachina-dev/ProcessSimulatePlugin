@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="OperationResult.cs" />
     <Compile Include="OperationResultCollection.cs" />
+    <Compile Include="OperationDuplicator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="StringTable.resx">

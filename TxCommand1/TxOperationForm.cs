@@ -25,7 +25,7 @@ namespace TxCommand1
                 if (selectedObject is ITxOperation operation)
                 {
                     _operationPicker.Object = operation;
-                    _demo();
+                    Demo();
                 }
             }
 
@@ -34,20 +34,20 @@ namespace TxCommand1
 
         private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
-            _demo();
+            Demo();
         }
 
         private void _operationPicker_TypeValid(object sender, EventArgs e)
         {
-            _demo();
+            Demo();
         }
 
         private void _operationPicker_TypeInvalid(object sender, EventArgs e)
         {
-            _demo();
+            Demo();
         }
 
-        private void _demo()
+        private void Demo()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace TxCommand1
                     
                     // Set the operation as current and run a simulation
                     TxApplication.ActiveDocument.CurrentOperation = operation;
-                    
+
                     var simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
                     if (simPlayer == null)
                         throw new InvalidOperationException("Simulation player is not available.");
@@ -142,11 +142,12 @@ namespace TxCommand1
                     simPlayer.Rewind();
                     simPlayer.PlaySilently();
                     simPlayer.ResetToDefaultSetting();
-                    
+
                     // Collect durations after simulation
                     var leafOperations = GetLeafOperations(operation);
                     foreach (var leafOp in leafOperations)
                     {
+
                         if (leafOp != null && !string.IsNullOrEmpty(leafOp.Name))
                         {
                             results.Add(leafOp.Name, leafOp.Duration);
@@ -185,6 +186,11 @@ namespace TxCommand1
         private void _btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+        
+        private void _programPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
+        {
+            if (_programPicker.Object is ITxOperation operation) OperationDuplicator.DuplicateOperation(operation);
         }
     }
 }
