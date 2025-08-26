@@ -33,7 +33,7 @@
             this._btnClose = new System.Windows.Forms.Button();
             this._btnOptimize = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.txNumericEditBoxCtrl1 = new Tecnomatix.Engineering.Ui.TxNumericEditBoxCtrl();
+            this._durationInput = new Tecnomatix.Engineering.Ui.TxNumericEditBoxCtrl();
             this.SuspendLayout();
             // 
             // label1
@@ -60,9 +60,6 @@
             this._operationPicker.Size = new System.Drawing.Size(173, 20);
             this._operationPicker.TabIndex = 3;
             this._operationPicker.ValidatorType = Tecnomatix.Engineering.Ui.TxValidatorType.Operation;
-            this._operationPicker.TypeInvalid += new System.EventHandler(this._operationPicker_TypeInvalid);
-            this._operationPicker.TypeValid += new System.EventHandler(this._operationPicker_TypeValid);
-            this._operationPicker.Picked += new Tecnomatix.Engineering.Ui.TxObjEditBoxCtrl_PickedEventHandler(this._operationPicker_Picked);
             // 
             // _btnClose
             // 
@@ -84,6 +81,7 @@
             this._btnOptimize.TabIndex = 7;
             this._btnOptimize.Text = "optimize";
             this._btnOptimize.UseVisualStyleBackColor = true;
+            this._btnOptimize.Click += new System.EventHandler(this._btnOptimize_Click);
             // 
             // label2
             // 
@@ -94,29 +92,29 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "Target duration:";
             // 
-            // txNumericEditBoxCtrl1
+            // _durationInput
             // 
-            this.txNumericEditBoxCtrl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.txNumericEditBoxCtrl1.Location = new System.Drawing.Point(147, 51);
-            this.txNumericEditBoxCtrl1.LowerBound = -7.92281525142643E+18D;
-            this.txNumericEditBoxCtrl1.Name = "txNumericEditBoxCtrl1";
-            this.txNumericEditBoxCtrl1.ReadOnly = false;
-            this.txNumericEditBoxCtrl1.Size = new System.Drawing.Size(173, 22);
-            this.txNumericEditBoxCtrl1.StepSize = 1D;
-            this.txNumericEditBoxCtrl1.TabIndex = 9;
-            this.txNumericEditBoxCtrl1.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.txNumericEditBoxCtrl1.ThousandsSeparator = false;
-            this.txNumericEditBoxCtrl1.UpperBound = 7.92281525142643E+18D;
-            this.txNumericEditBoxCtrl1.UseDecimalPlacesFromOption = true;
-            this.txNumericEditBoxCtrl1.Value = 0D;
-            this.txNumericEditBoxCtrl1.ValueType = Tecnomatix.Engineering.Ui.TxNumericEditValueType.Linear;
+            this._durationInput.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this._durationInput.Location = new System.Drawing.Point(147, 51);
+            this._durationInput.LowerBound = -7.92281525142643E+18D;
+            this._durationInput.Name = "_durationInput";
+            this._durationInput.ReadOnly = false;
+            this._durationInput.Size = new System.Drawing.Size(173, 22);
+            this._durationInput.StepSize = 1D;
+            this._durationInput.TabIndex = 9;
+            this._durationInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this._durationInput.ThousandsSeparator = false;
+            this._durationInput.UpperBound = 7.92281525142643E+18D;
+            this._durationInput.UseDecimalPlacesFromOption = true;
+            this._durationInput.Value = 0D;
+            this._durationInput.ValueType = Tecnomatix.Engineering.Ui.TxNumericEditValueType.Linear;
             // 
             // TxOperationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(368, 155);
-            this.Controls.Add(this.txNumericEditBoxCtrl1);
+            this.Controls.Add(this._durationInput);
             this.Controls.Add(this.label2);
             this.Controls.Add(this._btnOptimize);
             this.Controls.Add(this._btnClose);
@@ -133,7 +131,7 @@
             this.PerformLayout();
         }
 
-        private Tecnomatix.Engineering.Ui.TxNumericEditBoxCtrl txNumericEditBoxCtrl1;
+        private Tecnomatix.Engineering.Ui.TxNumericEditBoxCtrl _durationInput;
 
         private System.Windows.Forms.Label label2;
 

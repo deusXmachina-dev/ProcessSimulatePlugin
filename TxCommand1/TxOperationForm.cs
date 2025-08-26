@@ -16,21 +16,6 @@ namespace TxCommand1
         {
             InitializeComponent();
         }
-
-        private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
-        {
-            SimulatePickedOperationAtDifferentSpeeds();
-        }
-
-        private void _operationPicker_TypeValid(object sender, EventArgs e)
-        {
-            SimulatePickedOperationAtDifferentSpeeds();
-        }
-
-        private void _operationPicker_TypeInvalid(object sender, EventArgs e)
-        {
-            SimulatePickedOperationAtDifferentSpeeds();
-        }
         
         /// <summary>
         /// Gets all leaf robotic via location operations from the specified operation.
@@ -133,20 +118,11 @@ namespace TxCommand1
 
             return results;
         }
-
-        private void _btnClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
         
         private void SimulatePickedOperationAtDifferentSpeeds()
         {
             if (_operationPicker.Object is ITxOperation operation)
             {
-                var simulationResults = new System.Text.StringBuilder();
-                simulationResults.AppendLine($"Simulation Results for: {operation.Name}");
-                simulationResults.AppendLine(new string('=', 50));
-                
                 // for each speed from 5 to 100 at 5 steps - copy the op, modify the speed and run the sim
                 for (int speed = 5; speed <= 100; speed += 5)
                 {
@@ -155,12 +131,13 @@ namespace TxCommand1
                     ModifyOperationSpeed(newOp, speed);
 
                     var results = RunSimulationAndGetDurations(newOp);
-                    simulationResults.AppendLine($"Speed: {speed}% - Duration: {results.GetTotalDuration():F2} seconds");
+                    if (results.GetTotalDuration() < _durationInput.Value)
+                    {
+                        newOp.Name = $"En. optimal ({_durationInput.Value:F2} s) {operation.Name}";
+                        break;   
+                    }
                     newOp.Delete();
                 }
-                
-                // Show results in a message box
-                MessageBox.Show(simulationResults.ToString(), @"Simulation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -184,6 +161,16 @@ namespace TxCommand1
                     op.SetParameter(speedParam);
                 }
             }
+        }
+
+        private void _btnOptimize_Click(object sender, EventArgs e)
+        {
+            SimulatePickedOperationAtDifferentSpeeds();
+        }
+        
+        private void _btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
