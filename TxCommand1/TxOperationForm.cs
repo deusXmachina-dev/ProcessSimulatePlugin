@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
 using Tecnomatix.Engineering.Ui;
@@ -194,6 +195,10 @@ namespace TxCommand1
         {
             if (_programPicker.Object is ITxOperation operation)
             {
+                var simulationResults = new System.Text.StringBuilder();
+                simulationResults.AppendLine($"Simulation Results for: {operation.Name}");
+                simulationResults.AppendLine(new string('=', 50));
+                
                 // for each speed from 10 to 100 at 10 steps - copy the op, modify the speed and run the sim
                 for (int speed = 10; speed <= 100; speed += 10)
                 {
@@ -202,9 +207,12 @@ namespace TxCommand1
                     ModifyOperationSpeed(newOp, speed);
 
                     var results = RunSimulationAndGetDurations(newOp);
-                    Debug.WriteLine($"Speed: {speed}, Duration: {results.GetTotalDuration()}");
+                    simulationResults.AppendLine($"Speed: {speed}% - Duration: {results.GetTotalDuration():F2} seconds");
                     newOp.Delete();
                 }
+                
+                // Show results in a message box
+                MessageBox.Show(simulationResults.ToString(), "Simulation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
