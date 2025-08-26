@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Tecnomatix.Engineering;
+using Tecnomatix.Engineering.Olp;
 using Tecnomatix.Engineering.Ui;
 
 namespace TxCommand1
 {
     public partial class TxOperationForm : TxForm
     {
+        private ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
+        
         public TxOperationForm()
         {
             InitializeComponent();
@@ -130,18 +134,16 @@ namespace TxCommand1
                 
                 try
                 {
-                    
-                    // Set the operation as current and run a simulation
-                    TxApplication.ActiveDocument.CurrentOperation = operation;
-
                     var simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
                     if (simPlayer == null)
                         throw new InvalidOperationException("Simulation player is not available.");
 
+
                     // Run the simulation
                     simPlayer.Rewind();
+                    TxApplication.ActiveDocument.CurrentOperation = operation;
                     simPlayer.PlaySilently();
-                    simPlayer.ResetToDefaultSetting();
+                    simPlayer.Rewind();
 
                     // Collect durations after simulation
                     var leafOperations = GetLeafOperations(operation);
@@ -190,7 +192,42 @@ namespace TxCommand1
         
         private void _programPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
-            if (_programPicker.Object is ITxOperation operation) OperationDuplicator.DuplicateOperation(operation);
+            if (_programPicker.Object is ITxOperation operation)
+            {
+                // for each speed from 10 to 100 at 10 steps - copy the op, modify the speed and run the sim
+                for (int speed = 10; speed <= 100; speed += 10)
+                {
+                    ITxOperation newOp = OperationDuplicator.DuplicateOperation(operation);
+                    newOp.Name = $"Temp copy of {operation.Name} at speed {speed}";
+                    ModifyOperationSpeed(newOp, speed);
+
+                    var results = RunSimulationAndGetDurations(newOp);
+                    Debug.WriteLine($"Speed: {speed}, Duration: {results.GetTotalDuration()}");
+                    newOp.Delete();
+                }
+            }
+        }
+
+        private void ModifyOperationSpeed(ITxOperation operation, int speed)
+        {
+            // 1. get all leaf operations
+            TxObjectList<TxRoboticViaLocationOperation> leafOperations = GetLeafOperations(operation);
+
+            // 2. filter only joint motion type operations
+            var jointMotionOperations = leafOperations
+                .Where(o => _rcsService.GetLocationMotionType(o) == TxMotionType.Joint);
+
+            // 3. set the speed for each joint motion operation
+            foreach (var op in jointMotionOperations)
+            {
+                // op.SetParameter();
+                Debug.WriteLine($"Setting speed for {op.Name} to {speed}");
+                if (op.GetParameter("RRS_JOINT_SPEED") is TxRoboticDoubleParam speedParam)
+                {
+                    speedParam.Value = speed;
+                    op.SetParameter(speedParam);
+                }
+            }
         }
     }
 }
