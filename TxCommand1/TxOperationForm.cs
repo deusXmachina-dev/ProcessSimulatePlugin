@@ -17,26 +17,6 @@ namespace TxCommand1
             InitializeComponent();
         }
 
-        public override void OnInitTxForm()
-        {
-            base.OnInitTxForm();
-
-            TxObjectList selectedObjects = TxApplication.ActiveSelection.GetItems();
-            // this will have to be filtered by path operations
-            
-            if (selectedObjects.Count > 0)
-            {
-                ITxObject selectedObject = selectedObjects[0];
-                if (selectedObject is ITxOperation operation)
-                {
-                    _operationPicker.Object = operation;
-                    SimulatePickedOperationAtDifferentSpeeds();
-                }
-            }
-
-            _operationPicker.Focus();
-        }
-
         private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
             SimulatePickedOperationAtDifferentSpeeds();
@@ -154,21 +134,6 @@ namespace TxCommand1
             return results;
         }
 
-        /// <summary>
-        /// Runs a simulation for the currently selected operation in the operation picker and returns
-        /// a collection of operation results containing the durations of all leaf operations.
-        /// </summary>
-        /// <returns>An OperationResultCollection containing the name and duration of each leaf operation.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when no operation is selected or simulation fails.</exception>
-        private OperationResultCollection RunSimulationAndGetDurations()
-        {
-            var operation = _operationPicker.Object as ITxOperation;
-            if (operation == null)
-                throw new InvalidOperationException("No valid operation selected in the operation picker.");
-
-            return RunSimulationAndGetDurations(operation);
-        }
-
         private void _btnClose_Click(object sender, EventArgs e)
         {
             Close();
@@ -182,7 +147,7 @@ namespace TxCommand1
                 simulationResults.AppendLine($"Simulation Results for: {operation.Name}");
                 simulationResults.AppendLine(new string('=', 50));
                 
-                // for each speed from 10 to 100 at 10 steps - copy the op, modify the speed and run the sim
+                // for each speed from 5 to 100 at 5 steps - copy the op, modify the speed and run the sim
                 for (int speed = 5; speed <= 100; speed += 5)
                 {
                     ITxOperation newOp = OperationDuplicator.DuplicateOperation(operation);
@@ -195,7 +160,7 @@ namespace TxCommand1
                 }
                 
                 // Show results in a message box
-                MessageBox.Show(simulationResults.ToString(), "Simulation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(simulationResults.ToString(), @"Simulation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
