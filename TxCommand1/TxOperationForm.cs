@@ -10,7 +10,7 @@ namespace TxCommand1
 {
     public partial class TxOperationForm : TxForm
     {
-        private ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
+        private readonly ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
         
         public TxOperationForm()
         {
@@ -30,7 +30,7 @@ namespace TxCommand1
                 if (selectedObject is ITxOperation operation)
                 {
                     _operationPicker.Object = operation;
-                    Demo();
+                    SimulatePickedOperationAtDifferentSpeeds();
                 }
             }
 
@@ -39,34 +39,17 @@ namespace TxCommand1
 
         private void _operationPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
         {
-            Demo();
+            SimulatePickedOperationAtDifferentSpeeds();
         }
 
         private void _operationPicker_TypeValid(object sender, EventArgs e)
         {
-            Demo();
+            SimulatePickedOperationAtDifferentSpeeds();
         }
 
         private void _operationPicker_TypeInvalid(object sender, EventArgs e)
         {
-            Demo();
-        }
-
-        private void Demo()
-        {
-            try
-            {
-                // Use the new method to run simulation and get durations
-                var operationResults = RunSimulationAndGetDurations();
-                
-                // Output the results using the collection's ToString method
-                Debug.WriteLine("=== Simulation Results ===");
-                Debug.WriteLine(operationResults.ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error during simulation: {ex.Message}");
-            }
+            SimulatePickedOperationAtDifferentSpeeds();
         }
         
         /// <summary>
@@ -191,16 +174,16 @@ namespace TxCommand1
             Close();
         }
         
-        private void _programPicker_Picked(object sender, TxObjEditBoxCtrl_PickedEventArgs args)
+        private void SimulatePickedOperationAtDifferentSpeeds()
         {
-            if (_programPicker.Object is ITxOperation operation)
+            if (_operationPicker.Object is ITxOperation operation)
             {
                 var simulationResults = new System.Text.StringBuilder();
                 simulationResults.AppendLine($"Simulation Results for: {operation.Name}");
                 simulationResults.AppendLine(new string('=', 50));
                 
                 // for each speed from 10 to 100 at 10 steps - copy the op, modify the speed and run the sim
-                for (int speed = 10; speed <= 100; speed += 10)
+                for (int speed = 5; speed <= 100; speed += 5)
                 {
                     ITxOperation newOp = OperationDuplicator.DuplicateOperation(operation);
                     newOp.Name = $"Temp copy of {operation.Name} at speed {speed}";

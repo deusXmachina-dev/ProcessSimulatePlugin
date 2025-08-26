@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Tecnomatix.Engineering;           // API types
 
 // (if you use clipboard helpers)
@@ -9,7 +8,7 @@ namespace TxCommand1
     /// <summary>
     /// Provides functionality to duplicate operations within Tecnomatix Engineering environments.
     /// </summary>
-    public class OperationDuplicator
+    public static class OperationDuplicator
     {
         /// <summary>
         /// Duplicate an operation by pasting it into the specified target collection.
@@ -22,8 +21,7 @@ namespace TxCommand1
         {
             if (sourceOp == null) throw new ArgumentNullException(nameof(sourceOp));
             TxObjectList origins = new TxObjectList { sourceOp };
-            Hashtable originToCopied;
-            TxApplication.ActiveDocument.OperationRoot.Paste(origins, out originToCopied);
+            TxApplication.ActiveDocument.OperationRoot.Paste(origins, out var originToCopied);
             return originToCopied[sourceOp] as ITxOperation;
         }
     }
