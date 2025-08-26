@@ -1,4 +1,4 @@
-namespace TxCommand1
+namespace TxCommand1.Forms
 {
 	partial class TxOperationForm
 	{

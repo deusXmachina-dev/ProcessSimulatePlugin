@@ -1,6 +1,6 @@
 using Tecnomatix.Engineering;
 
-namespace TxCommand1
+namespace TxCommand1.Operations
 {
     /// <summary>
     /// Optimization routines for operations, e.g. speed tuning under duration limits.

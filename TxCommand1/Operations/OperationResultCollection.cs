@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace TxCommand1
+namespace TxCommand1.Operations
 {
     /// <summary>
     /// Represents a collection of operation results with methods to calculate total duration

@@ -1,8 +1,9 @@
 using System;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Ui;
+using TxCommand1.Operations;
 
-namespace TxCommand1
+namespace TxCommand1.Forms
 {
 	public partial class TxOperationForm : TxForm
 	{

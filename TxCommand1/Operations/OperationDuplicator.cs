@@ -1,9 +1,11 @@
 using System;
-using Tecnomatix.Engineering;           // API types
+using Tecnomatix.Engineering;
+
+// API types
 
 // (if you use clipboard helpers)
 
-namespace TxCommand1
+namespace TxCommand1.Operations
 {
     /// <summary>
     /// Provides functionality to duplicate operations within Tecnomatix Engineering environments.

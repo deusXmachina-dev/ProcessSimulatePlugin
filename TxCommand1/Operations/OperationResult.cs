@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace TxCommand1
+namespace TxCommand1.Operations
 {
     /// <summary>
     /// Represents an operation result containing the operation name and duration.
