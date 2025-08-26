@@ -29,9 +29,6 @@ namespace TxCommand1
         /// <summary>
         /// Gets or sets the operation result at the specified index.
         /// </summary>
-        /// <param name="index">The zero-based index of the operation result to get or set.</param>
-        /// <returns>The operation result at the specified index.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
         public OperationResult this[int index]
         {
             get => _operations[index];
@@ -50,7 +47,6 @@ namespace TxCommand1
         /// Initializes a new instance of the <see cref="OperationResultCollection"/> class
         /// with the specified initial capacity.
         /// </summary>
-        /// <param name="capacity">The initial capacity of the collection.</param>
         public OperationResultCollection(int capacity)
         {
             _operations = new List<OperationResult>(capacity);
@@ -60,8 +56,6 @@ namespace TxCommand1
         /// Initializes a new instance of the <see cref="OperationResultCollection"/> class
         /// with operation results from the specified collection.
         /// </summary>
-        /// <param name="operations">The collection of operation results to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown when operations is null.</exception>
         public OperationResultCollection(IEnumerable<OperationResult> operations)
         {
             if (operations == null)
@@ -73,7 +67,6 @@ namespace TxCommand1
         /// <summary>
         /// Adds an operation result to the collection.
         /// </summary>
-        /// <param name="operationResult">The operation result to add.</param>
         public void Add(OperationResult operationResult)
         {
             _operations.Add(operationResult);
@@ -82,8 +75,6 @@ namespace TxCommand1
         /// <summary>
         /// Adds an operation result to the collection using the operation name and duration.
         /// </summary>
-        /// <param name="operationName">The name of the operation.</param>
-        /// <param name="duration">The duration of the operation in seconds.</param>
         public void Add(string operationName, double duration)
         {
             _operations.Add(new OperationResult(operationName, duration));
@@ -92,8 +83,6 @@ namespace TxCommand1
         /// <summary>
         /// Adds multiple operation results to the collection.
         /// </summary>
-        /// <param name="operationResults">The operation results to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown when operationResults is null.</exception>
         public void AddRange(IEnumerable<OperationResult> operationResults)
         {
             if (operationResults == null)
@@ -105,8 +94,6 @@ namespace TxCommand1
         /// <summary>
         /// Removes the first occurrence of the specified operation result from the collection.
         /// </summary>
-        /// <param name="operationResult">The operation result to remove.</param>
-        /// <returns>true if the operation result was successfully removed; otherwise, false.</returns>
         public bool Remove(OperationResult operationResult)
         {
             return _operations.Remove(operationResult);
@@ -115,8 +102,6 @@ namespace TxCommand1
         /// <summary>
         /// Removes the operation result at the specified index.
         /// </summary>
-        /// <param name="index">The zero-based index of the operation result to remove.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
         public void RemoveAt(int index)
         {
             _operations.RemoveAt(index);
@@ -133,8 +118,6 @@ namespace TxCommand1
         /// <summary>
         /// Determines whether the collection contains the specified operation result.
         /// </summary>
-        /// <param name="operationResult">The operation result to locate.</param>
-        /// <returns>true if the operation result is found; otherwise, false.</returns>
         public bool Contains(OperationResult operationResult)
         {
             return _operations.Contains(operationResult);
@@ -143,7 +126,6 @@ namespace TxCommand1
         /// <summary>
         /// Calculates the total duration of all operations in the collection.
         /// </summary>
-        /// <returns>The sum of all operation durations in seconds.</returns>
         public double GetTotalDuration()
         {
             return _operations.Sum(op => op.Duration);
@@ -152,7 +134,6 @@ namespace TxCommand1
         /// <summary>
         /// Gets the average duration of all operations in the collection.
         /// </summary>
-        /// <returns>The average duration in seconds, or 0 if the collection is empty.</returns>
         public double GetAverageDuration()
         {
             return _operations.Count == 0 ? 0.0 : _operations.Average(op => op.Duration);
@@ -161,7 +142,6 @@ namespace TxCommand1
         /// <summary>
         /// Gets the operation with the longest duration.
         /// </summary>
-        /// <returns>The operation result with the maximum duration, or null if the collection is empty.</returns>
         public OperationResult? GetLongestOperation()
         {
             if (_operations.Count == 0)
@@ -173,7 +153,6 @@ namespace TxCommand1
         /// <summary>
         /// Gets the operation with the shortest duration.
         /// </summary>
-        /// <returns>The operation result with the minimum duration, or null if the collection is empty.</returns>
         public OperationResult? GetShortestOperation()
         {
             if (_operations.Count == 0)
@@ -185,7 +164,6 @@ namespace TxCommand1
         /// <summary>
         /// Returns a string representation of the entire collection with summary information.
         /// </summary>
-        /// <returns>A formatted string containing all operations and summary statistics.</returns>
         public override string ToString()
         {
             return ToString("F3", true);
@@ -194,9 +172,6 @@ namespace TxCommand1
         /// <summary>
         /// Returns a string representation of the collection with custom formatting options.
         /// </summary>
-        /// <param name="durationFormat">The format string for durations. Default is "F3".</param>
-        /// <param name="includeSummary">Whether to include summary statistics. Default is true.</param>
-        /// <returns>A formatted string representation of the collection.</returns>
         public string ToString(string durationFormat, bool includeSummary = true)
         {
             if (string.IsNullOrEmpty(durationFormat))
@@ -240,8 +215,6 @@ namespace TxCommand1
         /// <summary>
         /// Returns a compact string representation showing only the summary.
         /// </summary>
-        /// <param name="durationFormat">The format string for durations. Default is "F3".</param>
-        /// <returns>A compact summary string.</returns>
         public string ToSummaryString(string durationFormat = "F3")
         {
             if (_operations.Count == 0)
@@ -254,7 +227,6 @@ namespace TxCommand1
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>An enumerator for the collection.</returns>
         public IEnumerator<OperationResult> GetEnumerator()
         {
             return _operations.GetEnumerator();
@@ -263,7 +235,6 @@ namespace TxCommand1
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
-        /// <returns>An enumerator for the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -272,7 +243,6 @@ namespace TxCommand1
         /// <summary>
         /// Creates a copy of the collection with all operation results.
         /// </summary>
-        /// <returns>A new OperationResultCollection with the same operation results.</returns>
         public OperationResultCollection Clone()
         {
             return new OperationResultCollection(_operations);
@@ -281,9 +251,6 @@ namespace TxCommand1
         /// <summary>
         /// Filters the collection to include only operations with durations within the specified range.
         /// </summary>
-        /// <param name="minDuration">The minimum duration (inclusive).</param>
-        /// <param name="maxDuration">The maximum duration (inclusive).</param>
-        /// <returns>A new collection containing only operations within the duration range.</returns>
         public OperationResultCollection FilterByDuration(double minDuration, double maxDuration)
         {
             var filtered = _operations.Where(op => op.Duration >= minDuration && op.Duration <= maxDuration);
@@ -293,9 +260,6 @@ namespace TxCommand1
         /// <summary>
         /// Filters the collection to include only operations whose names contain the specified text.
         /// </summary>
-        /// <param name="nameFilter">The text to search for in operation names (case-insensitive).</param>
-        /// <returns>A new collection containing only operations matching the name filter.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when nameFilter is null.</exception>
         public OperationResultCollection FilterByName(string nameFilter)
         {
             if (nameFilter == null)
@@ -307,3 +271,5 @@ namespace TxCommand1
         }
     }
 }
+
+

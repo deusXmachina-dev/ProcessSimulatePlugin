@@ -1,0 +1,46 @@
+using Tecnomatix.Engineering;
+
+namespace TxCommand1
+{
+    /// <summary>
+    /// Optimization routines for operations, e.g. speed tuning under duration limits.
+    /// </summary>
+    public class OperationOptimization
+    {
+        private readonly OperationUtilities _utilities;
+
+        public OperationOptimization(OperationUtilities utilities)
+        {
+            _utilities = utilities;
+        }
+
+        /// <summary>
+        /// Tries joint-speed variants from 5..100 by 5 and returns the first under the limit.
+        /// The returned operation is a duplicated, renamed variant; caller owns its lifecycle.
+        /// </summary>
+        public ITxOperation OptimizePathEnergy(ITxOperation operation, double limitDuration)
+        {
+            if (operation == null)
+                return null;
+
+            for (int speed = 5; speed <= 100; speed += 5)
+            {
+                ITxOperation newOp = OperationDuplicator.DuplicateOperation(operation);
+                newOp.Name = $"Temp copy of {operation.Name} at speed {speed}";
+                _utilities.ModifyOperationSpeed(newOp, speed);
+
+                var results = _utilities.RunSimulationAndGetDurations(newOp);
+                if (results.GetTotalDuration() < limitDuration)
+                {
+                    newOp.Name = $"En. optimal ({limitDuration:F2} s) {operation.Name}";
+                    return newOp;
+                }
+                newOp.Delete();
+            }
+
+            return null;
+        }
+    }
+}
+
+

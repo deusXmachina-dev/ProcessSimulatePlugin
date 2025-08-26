@@ -1,31 +1,18 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
-using Tecnomatix.Engineering.Ui;
 
 namespace TxCommand1
 {
-    public partial class TxOperationForm : TxForm
+    /// <summary>
+    /// Utility helpers for inspecting and modifying Tecnomatix operations.
+    /// </summary>
+    public class OperationUtilities
     {
         private readonly ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
-        
-        public TxOperationForm()
-        {
-            InitializeComponent();
-        }
-        
-        /// <summary>
-        /// Gets all leaf robotic via location operations from the specified operation.
-        /// If the operation is a collection, recursively searches for all descendant leaf operations.
-        /// If the operation is already a leaf operation, returns it directly.
-        /// </summary>
-        /// <param name="operation">The operation to extract leaf operations from. Can be a single operation or a collection.</param>
-        /// <returns>A list of all TxRoboticViaLocationOperation instances found as leaf operations.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the operation parameter is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when there's an error accessing operation properties or descendants.</exception>
+
         private TxObjectList<TxRoboticViaLocationOperation> GetLeafOperations(ITxObject operation)
         {
             if (operation == null)
@@ -37,7 +24,7 @@ namespace TxCommand1
                 TxObjectList descendants = collection.GetAllDescendants(new TxTypeFilter(
                     includedTypes: new[] { typeof(TxRoboticViaLocationOperation) },
                     excludedTypes: new[] { typeof(ITxObjectCollection) }));
-                
+
                 if (descendants != null)
                 {
                     foreach (var o in descendants)
@@ -49,7 +36,6 @@ namespace TxCommand1
                         }
                     }
                 }
- 
             }
             else if (operation is TxRoboticViaLocationOperation leafOperation)
             {
@@ -59,14 +45,9 @@ namespace TxCommand1
         }
 
         /// <summary>
-        /// Runs a simulation for the specified operation and returns a collection of operation results
-        /// containing the durations of all leaf operations after simulation.
+        /// Runs the simulation for the given operation and returns per-leaf durations.
         /// </summary>
-        /// <param name="operation">The operation to simulate. Can be a single operation or a collection of operations.</param>
-        /// <returns>An OperationResultCollection containing the name and duration of each leaf operation.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the operation is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when simulation fails or no active document is available.</exception>
-        private OperationResultCollection RunSimulationAndGetDurations(ITxOperation operation)
+        public OperationResultCollection RunSimulationAndGetDurations(ITxOperation operation)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
@@ -75,30 +56,25 @@ namespace TxCommand1
                 throw new InvalidOperationException("No active document available for simulation.");
 
             var results = new OperationResultCollection();
-            
+
             try
             {
-                // Store the original current operation to restore later
                 var originalCurrentOperation = TxApplication.ActiveDocument.CurrentOperation;
-                
+
                 try
                 {
                     var simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
                     if (simPlayer == null)
                         throw new InvalidOperationException("Simulation player is not available.");
 
-
-                    // Run the simulation
                     simPlayer.Rewind();
                     TxApplication.ActiveDocument.CurrentOperation = operation;
                     simPlayer.PlaySilently();
                     simPlayer.Rewind();
 
-                    // Collect durations after simulation
                     var leafOperations = GetLeafOperations(operation);
                     foreach (var leafOp in leafOperations)
                     {
-
                         if (leafOp != null && !string.IsNullOrEmpty(leafOp.Name))
                         {
                             results.Add(leafOp.Name, leafOp.Duration);
@@ -107,7 +83,6 @@ namespace TxCommand1
                 }
                 finally
                 {
-                    // Always restore the original current operation
                     TxApplication.ActiveDocument.CurrentOperation = originalCurrentOperation;
                 }
             }
@@ -118,42 +93,19 @@ namespace TxCommand1
 
             return results;
         }
-        
-        private void SimulatePickedOperationAtDifferentSpeeds()
-        {
-            if (_operationPicker.Object is ITxOperation operation)
-            {
-                // for each speed from 5 to 100 at 5 steps - copy the op, modify the speed and run the sim
-                for (int speed = 5; speed <= 100; speed += 5)
-                {
-                    ITxOperation newOp = OperationDuplicator.DuplicateOperation(operation);
-                    newOp.Name = $"Temp copy of {operation.Name} at speed {speed}";
-                    ModifyOperationSpeed(newOp, speed);
 
-                    var results = RunSimulationAndGetDurations(newOp);
-                    if (results.GetTotalDuration() < _durationInput.Value)
-                    {
-                        newOp.Name = $"En. optimal ({_durationInput.Value:F2} s) {operation.Name}";
-                        break;   
-                    }
-                    newOp.Delete();
-                }
-            }
-        }
-
-        private void ModifyOperationSpeed(ITxOperation operation, int speed)
+        /// <summary>
+        /// Sets the joint speed parameter for all joint motions within the operation tree.
+        /// </summary>
+        public void ModifyOperationSpeed(ITxOperation operation, int speed)
         {
-            // 1. get all leaf operations
             TxObjectList<TxRoboticViaLocationOperation> leafOperations = GetLeafOperations(operation);
 
-            // 2. filter only joint motion type operations
             var jointMotionOperations = leafOperations
                 .Where(o => _rcsService.GetLocationMotionType(o) == TxMotionType.Joint);
 
-            // 3. set the speed for each joint motion operation
             foreach (var op in jointMotionOperations)
             {
-                // op.SetParameter();
                 Debug.WriteLine($"Setting speed for {op.Name} to {speed}");
                 if (op.GetParameter("RRS_JOINT_SPEED") is TxRoboticDoubleParam speedParam)
                 {
@@ -162,15 +114,7 @@ namespace TxCommand1
                 }
             }
         }
-
-        private void _btnOptimize_Click(object sender, EventArgs e)
-        {
-            SimulatePickedOperationAtDifferentSpeeds();
-        }
-        
-        private void _btnClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
     }
 }
+
+

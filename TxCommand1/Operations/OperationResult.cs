@@ -100,9 +100,6 @@ namespace TxCommand1
         /// <summary>
         /// Determines whether two OperationResult instances are equal.
         /// </summary>
-        /// <param name="left">The first OperationResult to compare.</param>
-        /// <param name="right">The second OperationResult to compare.</param>
-        /// <returns>true if the OperationResult instances are equal; otherwise, false.</returns>
         public static bool operator ==(OperationResult left, OperationResult right)
         {
             return left.Equals(right);
@@ -111,12 +108,11 @@ namespace TxCommand1
         /// <summary>
         /// Determines whether two OperationResult instances are not equal.
         /// </summary>
-        /// <param name="left">The first OperationResult to compare.</param>
-        /// <param name="right">The second OperationResult to compare.</param>
-        /// <returns>true if the OperationResult instances are not equal; otherwise, false.</returns>
         public static bool operator !=(OperationResult left, OperationResult right)
         {
             return !left.Equals(right);
         }
     }
 }
+
+
