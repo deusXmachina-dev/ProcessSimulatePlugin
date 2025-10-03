@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Tecnomatix.Engineering;
@@ -13,7 +14,7 @@ namespace TxCommand1.Operations
     {
         private readonly ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
 
-        private TxObjectList<TxRoboticViaLocationOperation> GetLeafOperations(ITxObject operation)
+        private TxObjectList<TxRoboticViaLocationOperation> GetViaLocations(ITxObject operation)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
@@ -72,7 +73,7 @@ namespace TxCommand1.Operations
                     simPlayer.PlaySilently();
                     simPlayer.Rewind();
 
-                    var leafOperations = GetLeafOperations(operation);
+                    var leafOperations = GetViaLocations(operation);
                     foreach (var leafOp in leafOperations)
                     {
                         if (leafOp != null && !string.IsNullOrEmpty(leafOp.Name))
@@ -99,7 +100,7 @@ namespace TxCommand1.Operations
         /// </summary>
         public void ModifyOperationSpeed(ITxOperation operation, int speed)
         {
-            TxObjectList<TxRoboticViaLocationOperation> leafOperations = GetLeafOperations(operation);
+            TxObjectList<TxRoboticViaLocationOperation> leafOperations = GetViaLocations(operation);
 
             var jointMotionOperations = leafOperations
                 .Where(o => _rcsService.GetLocationMotionType(o) == TxMotionType.Joint);
@@ -116,22 +117,58 @@ namespace TxCommand1.Operations
         }
 
         /// <summary>
-        /// Gets all movements from the operation. Each movement is a sequence of joint operations.
+        /// Gets all motions from the operation. Each motion is a sequence of joint operations.
         /// </summary>
-        /// <param name="operation">The operation to extract movements from.</param>
-        /// <returns>A list of movements, where each movement is a list of robotic via operations.</returns>
-        public TxObjectList<TxObjectList<TxRoboticViaLocationOperation>> GetMovements(ITxOperation operation)
+        /// <param name="operation">The operation to extract motions from.</param>
+        /// <returns>A list of motions, where each motion is a list of robotic via operations.</returns>
+        public List<TxObjectList<TxRoboticViaLocationOperation>> GetMotions(ITxOperation operation)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
 
-            var movements = new TxObjectList<TxObjectList<TxRoboticViaLocationOperation>>();
+            var motions = new List<TxObjectList<TxRoboticViaLocationOperation>>();
+            TxObjectList<TxRoboticViaLocationOperation> viaLocations = GetViaLocations(operation);
             
-            // TODO: Implement logic to group joint operations into movements
-            // This should analyze the operation structure and group consecutive joint operations
-            // that form logical movements together
+            var currentMotion = new TxObjectList<TxRoboticViaLocationOperation>();
             
-            return movements;
+            for (int i = 1; i < viaLocations.Count; i++)
+            {
+                var previousLoc = viaLocations[i - 1];
+                var currentLoc = viaLocations[i];
+                
+                bool isJointMovement = _rcsService.GetLocationMotionType(currentLoc) == TxMotionType.Joint;
+
+                if (isJointMovement)
+                {
+                    // if the current motion already has some operations, just add the current one
+                    if (currentMotion.Count > 0)
+                    {
+                        currentMotion.Add(currentLoc);
+                    }
+                    // otherwise add the both the previous and the current location
+                    else
+                    {
+                        currentMotion.Add(previousLoc);
+                        currentMotion.Add(currentLoc);
+                    }
+                }
+                else
+                {
+                    if (currentMotion.Count > 0)
+                    {
+                        motions.Add(currentMotion);
+                        currentMotion = new TxObjectList<TxRoboticViaLocationOperation>();
+                    }
+                }
+            }
+            
+            // Add any remaining movement
+            if (currentMotion.Count > 0)
+            {
+                motions.Add(currentMotion);
+            }
+            
+            return motions;
         }
     }
 }

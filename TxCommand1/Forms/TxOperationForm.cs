@@ -18,7 +18,7 @@ namespace TxCommand1.Forms
 		{
 			if (_operationPicker.Object is ITxOperation operation)
 			{
-				var optimizer = new DummyEnergyOptimizer(new OperationUtilities());
+				var optimizer = new HeuristicEnergyOptimizer(new OperationUtilities());
 				var optimized = optimizer.Optimize(operation, _durationInput.Value);
 				if (optimized == null)
 				{

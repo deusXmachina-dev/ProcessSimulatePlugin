@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Tecnomatix.Engineering;
 
 namespace TxCommand1.Operations
@@ -19,11 +20,9 @@ namespace TxCommand1.Operations
         /// </summary>
         public ITxOperation Optimize(ITxOperation operation, double limitDuration)
         {
-            // TODO: Implement heuristic optimization logic
-            throw new System.NotImplementedException();
 
-            // Get all movements (each is a sequence of joint operations)
-            TxObjectList<TxObjectList<TxRoboticViaLocationOperation>> movements = _utilities.GetMovements(operation);
+            // Get all motions (each is a sequence of joint operations)
+            List<TxObjectList<TxRoboticViaLocationOperation>> motions = _utilities.GetMotions(operation);
 
             // todo: 2. For each movement calculate total distance travelled and total vertical distance travelled
             // todo: 3. Sort movements by heuristic score (distance travelled + 2 * vertical distance travelled)
@@ -36,6 +35,7 @@ namespace TxCommand1.Operations
             // todo: 4.2 for movement in sorted list:
             // todo: 4.2.1. reduce speed to something around 45% if this does not exceed the limit duration
             // todo: 4.2.2. if it does exceed the limit duration, reduce speed as much as possible while staying within the limit duration and then break
+            return null;
         }
     }
 }
