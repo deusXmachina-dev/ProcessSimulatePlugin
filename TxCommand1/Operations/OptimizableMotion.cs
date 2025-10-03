@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Tecnomatix.Engineering;
 
 namespace TxCommand1.Operations
@@ -24,6 +25,11 @@ namespace TxCommand1.Operations
         private double TotalVerticalDistance { get; set; }
 
         /// <summary>
+        /// Gets the current velocity (speed) setting of this motion.
+        /// </summary>
+        public double Velocity { get; private set; }
+
+        /// <summary>
         /// Gets the heuristic score for energy optimization.
         /// Calculated as: TotalDistance + 2 * TotalVerticalDistance
         /// </summary>
@@ -36,6 +42,7 @@ namespace TxCommand1.Operations
         public OptimizableMotion(TxObjectList<TxRoboticViaLocationOperation> viaLocations)
         {
             ViaLocations = viaLocations ?? throw new ArgumentNullException(nameof(viaLocations));
+            ModifyVelocity(100); // Default to 100% velocity
             CalculateDistances();
         }
 
@@ -76,10 +83,21 @@ namespace TxCommand1.Operations
         /// Modifies the velocity (speed) of all via locations in this motion.
         /// </summary>
         /// <param name="targetSpeed">The target speed value to set.</param>
-        public void ModifyVelocity(int targetSpeed)
+        public void ModifyVelocity(double targetSpeed)
         {
-            // TODO: Implement velocity modification for all via locations
-            // TODO: Need to iterate through ViaLocations and set speed parameters
+
+            for (int i = 1; i < ViaLocations.Count; i++)
+            {
+                var op = ViaLocations[i];
+                Debug.WriteLine($"Setting speed for {op.Name} to {targetSpeed}");
+                if (op.GetParameter("RRS_JOINT_SPEED") is TxRoboticDoubleParam speedParam)
+                {
+                    speedParam.Value = targetSpeed;
+                    op.SetParameter(speedParam);
+                }
+            }
+            
+            Velocity = targetSpeed;
         }
     }
 }

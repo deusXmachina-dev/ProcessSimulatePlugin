@@ -13,6 +13,13 @@ namespace TxCommand1.Operations
         private readonly OperationUtilities _utilities;
         private readonly Random _random;
 
+        // Constants for optimization parameters
+        private const double DefaultStdDev = 2.5;
+        private const double DefaultClampRange = 5.0;
+        private const double VelocityIncrementStep = 5.0;
+        private const double FirstPassTargetVelocity = 60.0;
+        private const double SecondPassTargetVelocity = 45.0;
+
         public HeuristicEnergyOptimizer(OperationUtilities utilities)
         {
             _utilities = utilities;
@@ -45,54 +52,84 @@ namespace TxCommand1.Operations
         /// </summary>
         public ITxOperation Optimize(ITxOperation operation, double limitDuration)
         {
+            ITxOperation optimizedOperation = PrepareOperationForOptimization(operation);
             
-            ITxOperation newOp = OperationDuplicator.DuplicateOperation(operation);
-            newOp.Name = $"Temp copy of {operation.Name} for heuristic optimization";
-
-            List<TxObjectList<TxRoboticViaLocationOperation>> rawMotions = _utilities.GetMotions(newOp);
-
-            List<OptimizableMotion> optimizableMotions = _utilities.CreateOptimizableMotions(rawMotions);
-            List<OptimizableMotion> sortedMotions = optimizableMotions.OrderByDescending(
-                m => m.HeuristicScore).ToList();
-            
-            foreach (var motion in sortedMotions) motion.ModifyVelocity(100);
-            
-            // todo: maybe run simulation to get the current duration of the motion
-            var currentSimResults = _utilities.RunSimulationAndGetDurations(newOp);
-            if (currentSimResults.GetTotalDuration() >= limitDuration)
+            var currentSimResults = _utilities.RunSimulationAndGetDurations(optimizedOperation);
+            if (IsOverDurationLimit(currentSimResults, limitDuration))
             {
-                newOp.Delete();
+                optimizedOperation.Delete();
                 return null;
             }
-            
 
-            // todo: 4. start heuristic optimization:
-            // todo: 4.1. for movement in sorted list:
+            List<OptimizableMotion> sortedMotions = GetSortedOptimizableMotions(optimizedOperation);
+            
+            // Two-pass optimization: first conservative (60%), then aggressive (45%)
+            // to find the optimal balance between energy savings and time constraints
+            OptimizeMotionsWithVelocityTarget(sortedMotions, optimizedOperation, 
+                FirstPassTargetVelocity, limitDuration);
+            OptimizeMotionsWithVelocityTarget(sortedMotions, optimizedOperation, 
+                SecondPassTargetVelocity, limitDuration);
+            
+            optimizedOperation.Name = $"En. optimal ({limitDuration:F2} s) {operation.Name}";
+            return optimizedOperation;
+        }
+
+        private ITxOperation PrepareOperationForOptimization(ITxOperation operation)
+        {
+            ITxOperation duplicatedOperation = OperationDuplicator.DuplicateOperation(operation);
+            duplicatedOperation.Name = $"Temp copy of {operation.Name} for heuristic optimization";
+            return duplicatedOperation;
+        }
+
+        private List<OptimizableMotion> GetSortedOptimizableMotions(ITxOperation operation)
+        {
+            List<TxObjectList<TxRoboticViaLocationOperation>> rawMotions = 
+                _utilities.GetMotions(operation);
+            List<OptimizableMotion> optimizableMotions = 
+                _utilities.CreateOptimizableMotions(rawMotions);
+            
+            return optimizableMotions
+                .OrderByDescending(m => m.HeuristicScore)
+                .ToList();
+        }
+
+        private void OptimizeMotionsWithVelocityTarget(
+            List<OptimizableMotion> sortedMotions, 
+            ITxOperation operation,
+            double targetMeanVelocity, 
+            double limitDuration)
+        {
             foreach (var motion in sortedMotions)
-            {   
-                // todo: 4.1.1. reduce speed to something around 60% if this does not exceed the limit duration
-                int targetSpeed = (int)NextGaussian(mean: 60.0, stdDev: 2.5, clampRange: 5);
-                motion.ModifyVelocity(targetSpeed);
-                // todo: 4.1.2. if it does exceed the limit duration, reduce speed as much as possible (perhaps in 10% increments) while staying within the limit duration and then break
-                currentSimResults = _utilities.RunSimulationAndGetDurations(newOp);
-                if (currentSimResults.GetTotalDuration() >= limitDuration)
-                {
-                    
-                }
-
-            }
-            // todo: 4.2 for movement in sorted list:
-            // todo: 4.2.1. reduce speed to something around 45% if this does not exceed the limit duration
-            // todo: 4.2.2. if it does exceed the limit duration, reduce speed as much as possible while staying within the limit duration and then break
-            
-            
-            if (true)  // todo: review what this condition is supposed to be
             {
-                newOp.Name = $"En. optimal ({limitDuration:F2} s) {operation.Name}";
-                return newOp;
+                double previousVelocity = motion.Velocity;
+                double targetVelocity = NextGaussian(
+                    mean: targetMeanVelocity, 
+                    stdDev: DefaultStdDev, 
+                    clampRange: DefaultClampRange);
+                
+                motion.ModifyVelocity(targetVelocity);
+                
+                var currentSimResults = _utilities.RunSimulationAndGetDurations(operation);
+                if (IsOverDurationLimit(currentSimResults, limitDuration))
+                {
+                    RollbackVelocityChange(motion, previousVelocity, targetVelocity);
+                }
             }
-            newOp.Delete();
-            return null;
+        }
+
+        private void RollbackVelocityChange(OptimizableMotion motion, 
+            double previousVelocity, double targetVelocity)
+        {
+            while (targetVelocity < previousVelocity)
+            {
+                targetVelocity = Math.Min(targetVelocity + VelocityIncrementStep, previousVelocity);
+                motion.ModifyVelocity(targetVelocity);
+            }
+        }
+
+        private bool IsOverDurationLimit(OperationResultCollection results, double limitDuration)
+        {
+            return results.GetTotalDuration() >= limitDuration;
         }
     }
 }
