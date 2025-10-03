@@ -11,17 +11,17 @@ namespace TxCommand1.Operations
         /// <summary>
         /// Gets the original sequence of robotic via location operations.
         /// </summary>
-        public TxObjectList<TxRoboticViaLocationOperation> ViaLocations { get; private set; }
+        private TxObjectList<TxRoboticViaLocationOperation> ViaLocations { get; set; }
 
         /// <summary>
         /// Gets the total distance traveled during the motion.
         /// </summary>
-        public double TotalDistance { get; private set; }
+        private double TotalDistance { get; set; }
 
         /// <summary>
         /// Gets the total vertical distance traveled during the motion.
         /// </summary>
-        public double TotalVerticalDistance { get; private set; }
+        private double TotalVerticalDistance { get; set; }
 
         /// <summary>
         /// Gets the heuristic score for energy optimization.
@@ -70,6 +70,16 @@ namespace TxCommand1.Operations
             
             TotalDistance = totalDistance;
             TotalVerticalDistance = totalVerticalDistance;
+        }
+
+        /// <summary>
+        /// Modifies the velocity (speed) of all via locations in this motion.
+        /// </summary>
+        /// <param name="targetSpeed">The target speed value to set.</param>
+        public void ModifyVelocity(int targetSpeed)
+        {
+            // TODO: Implement velocity modification for all via locations
+            // TODO: Need to iterate through ViaLocations and set speed parameters
         }
     }
 }
