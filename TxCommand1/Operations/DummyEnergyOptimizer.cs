@@ -3,13 +3,13 @@ using Tecnomatix.Engineering;
 namespace TxCommand1.Operations
 {
     /// <summary>
-    /// Optimization routines for operations, e.g. speed tuning under duration limits.
+    /// Dummy implementation of energy optimization that tries joint-speed variants.
     /// </summary>
-    public class OperationOptimization
+    public class DummyEnergyOptimizer : IOperationEnergyOptimization
     {
         private readonly OperationUtilities _utilities;
 
-        public OperationOptimization(OperationUtilities utilities)
+        public DummyEnergyOptimizer(OperationUtilities utilities)
         {
             _utilities = utilities;
         }
@@ -18,7 +18,7 @@ namespace TxCommand1.Operations
         /// Tries joint-speed variants from 5..100 by 5 and returns the first under the limit.
         /// The returned operation is a duplicated, renamed variant; caller owns its lifecycle.
         /// </summary>
-        public ITxOperation OptimizePathEnergy(ITxOperation operation, double limitDuration)
+        public ITxOperation Optimize(ITxOperation operation, double limitDuration)
         {
             if (operation == null)
                 return null;
@@ -37,7 +37,6 @@ namespace TxCommand1.Operations
                 }
                 newOp.Delete();
             }
-
             return null;
         }
     }
