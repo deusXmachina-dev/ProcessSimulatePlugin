@@ -34,11 +34,7 @@ namespace TxCommand1
             if (to == null)
                 throw new ArgumentNullException(nameof(to));
 
-            double dx = to.X - from.X;
-            double dy = to.Y - from.Y;
-            double dz = to.Z - from.Z;
-
-            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+            return Magnitude(to - from);
         }
 
         /// <summary>
@@ -46,7 +42,7 @@ namespace TxCommand1
         /// </summary>
         /// <param name="from">The starting vector.</param>
         /// <param name="to">The ending vector.</param>
-        /// <returns>The absolute vertical distance.</returns>
+        /// <returns>The vertical distance.</returns>
         public static double VerticalDistance(TxVector from, TxVector to)
         {
             if (from == null)
@@ -54,7 +50,7 @@ namespace TxCommand1
             if (to == null)
                 throw new ArgumentNullException(nameof(to));
 
-            return Math.Abs(to.Z - from.Z);
+            return to.Z - from.Z;
         }
     }
 }

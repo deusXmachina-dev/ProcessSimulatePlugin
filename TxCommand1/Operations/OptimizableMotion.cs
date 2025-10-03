@@ -60,7 +60,12 @@ namespace TxCommand1.Operations
                 totalDistance += TxUtilities.Distance(previousPosition, currentPosition);
                 
                 // Calculate vertical (Z-axis) distance
-                totalVerticalDistance += TxUtilities.VerticalDistance(previousPosition, currentPosition);
+                var verticalDistance = TxUtilities.VerticalDistance(previousPosition, currentPosition);
+                if (verticalDistance > 0.0)
+                {
+                    // If this part of the motion is going up, add to vertical distance
+                    totalVerticalDistance += verticalDistance;
+                }
             }
             
             TotalDistance = totalDistance;
