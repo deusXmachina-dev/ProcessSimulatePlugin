@@ -170,6 +170,26 @@ namespace TxCommand1.Operations
             
             return motions;
         }
+
+        /// <summary>
+        /// Creates optimizable motion representations for all motions in a list.
+        /// </summary>
+        /// <param name="motions">A list of motions, where each motion is a sequence of robotic via operations.</param>
+        /// <returns>A list of optimizable motions corresponding to each motion.</returns>
+        public List<OptimizableMotion> CreateOptimizableMotions(List<TxObjectList<TxRoboticViaLocationOperation>> motions)
+        {
+            if (motions == null)
+                throw new ArgumentNullException(nameof(motions));
+
+            var optimizableMotions = new List<OptimizableMotion>();
+            
+            foreach (var motion in motions)
+            {
+                optimizableMotions.Add(new OptimizableMotion(motion));
+            }
+            
+            return optimizableMotions;
+        }
     }
 }
 

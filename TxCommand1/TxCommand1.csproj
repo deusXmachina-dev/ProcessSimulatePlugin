@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TxUtilities.cs" />
     <Compile Include="Forms\TxOperationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +73,7 @@
     <Compile Include="Operations\IOperationEnergyOptimization.cs" />
     <Compile Include="Operations\DummyEnergyOptimizer.cs" />
     <Compile Include="Operations\HeuristicEnergyOptimizer.cs" />
+    <Compile Include="Operations\OptimizableMotion.cs" />
     <Compile Include="StringTable.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

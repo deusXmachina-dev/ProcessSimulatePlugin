@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Tecnomatix.Engineering;
 
 namespace TxCommand1.Operations
@@ -21,11 +22,11 @@ namespace TxCommand1.Operations
         public ITxOperation Optimize(ITxOperation operation, double limitDuration)
         {
 
-            // Get all motions (each is a sequence of joint operations)
-            List<TxObjectList<TxRoboticViaLocationOperation>> motions = _utilities.GetMotions(operation);
+            List<TxObjectList<TxRoboticViaLocationOperation>> rawMotions = _utilities.GetMotions(operation);
 
-            // todo: 2. For each movement calculate total distance travelled and total vertical distance travelled
-            // todo: 3. Sort movements by heuristic score (distance travelled + 2 * vertical distance travelled)
+            List<OptimizableMotion> optimizableMotions = _utilities.CreateOptimizableMotions(rawMotions);
+            List<OptimizableMotion> sortedMotions = optimizableMotions.OrderByDescending(
+                m => m.HeuristicScore).ToList();
 
             // todo: 4. start heuristic optimization:
             // todo: 4.1. for movement in sorted list:
