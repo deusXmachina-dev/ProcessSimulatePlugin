@@ -23,7 +23,7 @@ namespace TxCommand1.Operations
             throw new System.NotImplementedException();
 
             // Get all movements (each is a sequence of joint operations)
-            TxObjectList movements = _utilities.GetMovements(operation);
+            TxObjectList<TxObjectList<TxRoboticViaLocationOperation>> movements = _utilities.GetMovements(operation);
 
             // todo: 2. For each movement calculate total distance travelled and total vertical distance travelled
             // todo: 3. Sort movements by heuristic score (distance travelled + 2 * vertical distance travelled)
