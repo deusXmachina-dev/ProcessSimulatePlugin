@@ -114,6 +114,26 @@ namespace TxCommand1.Operations
                 }
             }
         }
+
+        /// <summary>
+        /// Gets all movements from the operation. Each movement is a sequence of joint operations.
+        /// </summary>
+        /// <param name="operation">The operation to extract movements from.</param>
+        /// <returns>A list of movements, where each movement is a list of robotic via operations.</returns>
+        public TxObjectList GetMovements(ITxOperation operation)
+        {
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
+
+            var movements = new TxObjectList();
+            
+            // TODO: Implement logic to group joint operations into movements
+            // This should analyze the operation structure and group consecutive joint operations
+            // that form logical movements together
+            // Each item in the movements list should be a TxObjectList<TxRoboticViaLocationOperation>
+            
+            return movements;
+        }
     }
 }
 

@@ -22,7 +22,9 @@ namespace TxCommand1.Operations
             // TODO: Implement heuristic optimization logic
             throw new System.NotImplementedException();
 
-            // todo: 1. Get all movements (each is a sequence of joint operations)
+            // Get all movements (each is a sequence of joint operations)
+            TxObjectList movements = _utilities.GetMovements(operation);
+
             // todo: 2. For each movement calculate total distance travelled and total vertical distance travelled
             // todo: 3. Sort movements by heuristic score (distance travelled + 2 * vertical distance travelled)
 
