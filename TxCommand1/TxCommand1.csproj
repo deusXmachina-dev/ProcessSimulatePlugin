@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="Tecnomatix.Engineering.Olp">
       <HintPath>..\..\..\..\..\..\Program Files\Tecnomatix_2502\eMPower\Tecnomatix.Engineering.Olp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Tecnomatix.Engineering.Ui">
       <HintPath>..\..\..\..\..\..\Program Files\Tecnomatix_2502\eMPower\Tecnomatix.Engineering.Ui.dll</HintPath>
