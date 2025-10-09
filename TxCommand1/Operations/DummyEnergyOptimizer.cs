@@ -30,7 +30,7 @@ namespace TxCommand1.Operations
                 _utilities.ModifyOperationSpeed(newOp, speed);
 
                 var results = _utilities.RunSimulationAndGetDurations(newOp);
-                if (results.GetTotalDuration() < limitDuration)
+                if (newOp.Duration < limitDuration)
                 {
                     newOp.Name = $"En. optimal ({limitDuration:F2} s) {operation.Name}";
                     return newOp;

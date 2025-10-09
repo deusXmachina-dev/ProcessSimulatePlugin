@@ -54,8 +54,8 @@ namespace TxCommand1.Operations
         {
             ITxOperation optimizedOperation = PrepareOperationForOptimization(operation);
             
-            var currentSimResults = _utilities.RunSimulationAndGetDurations(optimizedOperation);
-            if (IsOverDurationLimit(currentSimResults, limitDuration))
+            _utilities.RunSimulationAndGetDurations(optimizedOperation);
+            if (IsOverDurationLimit(optimizedOperation, limitDuration))
             {
                 optimizedOperation.Delete();
                 return null;
@@ -109,8 +109,8 @@ namespace TxCommand1.Operations
                 
                 motion.ModifyVelocity(targetVelocity);
                 
-                var currentSimResults = _utilities.RunSimulationAndGetDurations(operation);
-                if (IsOverDurationLimit(currentSimResults, limitDuration))
+                _utilities.RunSimulationAndGetDurations(operation);
+                if (IsOverDurationLimit(operation, limitDuration))
                 {
                     RollbackVelocityChange(motion, previousVelocity, targetVelocity);
                 }
@@ -127,9 +127,9 @@ namespace TxCommand1.Operations
             }
         }
 
-        private bool IsOverDurationLimit(OperationResultCollection results, double limitDuration)
+        private bool IsOverDurationLimit(ITxOperation operation, double limitDuration)
         {
-            return results.GetTotalDuration() >= limitDuration;
+            return operation.Duration >= limitDuration;
         }
     }
 }

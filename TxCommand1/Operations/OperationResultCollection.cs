@@ -196,8 +196,6 @@ namespace TxCommand1.Operations
             if (includeSummary)
             {
                 sb.AppendLine(new string('-', 50));
-                sb.AppendLine($"Total Duration: {GetTotalDuration().ToString(durationFormat, CultureInfo.InvariantCulture)}s");
-                sb.AppendLine($"Average Duration: {GetAverageDuration().ToString(durationFormat, CultureInfo.InvariantCulture)}s");
                 
                 var longest = GetLongestOperation();
                 var shortest = GetShortestOperation();
@@ -210,18 +208,6 @@ namespace TxCommand1.Operations
             }
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Returns a compact string representation showing only the summary.
-        /// </summary>
-        public string ToSummaryString(string durationFormat = "F3")
-        {
-            if (_operations.Count == 0)
-                return "No operations";
-
-            var totalDuration = GetTotalDuration();
-            return $"{_operations.Count} operations, Total: {totalDuration.ToString(durationFormat, CultureInfo.InvariantCulture)}s";
         }
 
         /// <summary>
