@@ -14,23 +14,23 @@ namespace TxCommand1.Operations
     {
         private readonly ITxPathPlanningRCSService _rcsService = new TxPathPlanningRCSService();
 
-        private TxObjectList<TxRoboticViaLocationOperation> GetViaLocations(ITxObject operation)
+        private TxObjectList<ITxRoboticLocationOperation> GetLocationOperations(ITxObject operation)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
 
-            var result = new TxObjectList<TxRoboticViaLocationOperation>();
+            var result = new TxObjectList<ITxRoboticLocationOperation>();
             if (operation is ITxObjectCollection collection)
             {
                 TxObjectList descendants = collection.GetAllDescendants(new TxTypeFilter(
-                    includedTypes: new[] { typeof(TxRoboticViaLocationOperation) },
+                    includedTypes: new[] { typeof(ITxRoboticLocationOperation) },
                     excludedTypes: new[] { typeof(ITxObjectCollection) }));
 
                 if (descendants != null)
                 {
                     foreach (var o in descendants)
                     {
-                        var leafOperation = (TxRoboticViaLocationOperation)o;
+                        var leafOperation = (ITxRoboticLocationOperation)o;
                         if (leafOperation != null)
                         {
                             result.Add(leafOperation);
@@ -73,7 +73,7 @@ namespace TxCommand1.Operations
                     simPlayer.PlaySilently();
                     simPlayer.Rewind();
 
-                    var leafOperations = GetViaLocations(operation);
+                    var leafOperations = GetLocationOperations(operation);
                     foreach (var leafOp in leafOperations)
                     {
                         if (leafOp != null && !string.IsNullOrEmpty(leafOp.Name))
@@ -100,7 +100,7 @@ namespace TxCommand1.Operations
         /// </summary>
         public void ModifyOperationSpeed(ITxOperation operation, int speed)
         {
-            TxObjectList<TxRoboticViaLocationOperation> leafOperations = GetViaLocations(operation);
+            TxObjectList<ITxRoboticLocationOperation> leafOperations = GetLocationOperations(operation);
 
             var jointMotionOperations = leafOperations
                 .Where(o => _rcsService.GetLocationMotionType(o) == TxMotionType.Joint);
@@ -121,43 +121,50 @@ namespace TxCommand1.Operations
         /// </summary>
         /// <param name="operation">The operation to extract motions from.</param>
         /// <returns>A list of motions, where each motion is a list of robotic via operations.</returns>
-        public List<TxObjectList<TxRoboticViaLocationOperation>> GetMotions(ITxOperation operation)
+        public List<TxObjectList<ITxRoboticLocationOperation>> GetMotions(ITxOperation operation)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
 
-            var motions = new List<TxObjectList<TxRoboticViaLocationOperation>>();
-            TxObjectList<TxRoboticViaLocationOperation> viaLocations = GetViaLocations(operation);
+            var motions = new List<TxObjectList<ITxRoboticLocationOperation>>();
+            TxObjectList<ITxRoboticLocationOperation> locations = GetLocationOperations(operation);
             
-            var currentMotion = new TxObjectList<TxRoboticViaLocationOperation>();
+            var currentMotion = new TxObjectList<ITxRoboticLocationOperation>();
             
-            for (int i = 1; i < viaLocations.Count; i++)
+            for (int i = 1; i < locations.Count; i++)
             {
-                var previousLoc = viaLocations[i - 1];
-                var currentLoc = viaLocations[i];
+                var previousLoc = locations[i - 1];
+                var currentLoc = locations[i];
+
+                // If the current location is part of a different operation, then we have a new motion
+                if (!Equals(previousLoc.ParentRoboticOperation, currentLoc.ParentRoboticOperation))
+                {
+                    motions.Add(currentMotion);
+                    currentMotion = new TxObjectList<ITxRoboticLocationOperation>();
+                }
                 
                 bool isJointMovement = _rcsService.GetLocationMotionType(currentLoc) == TxMotionType.Joint;
 
-                if (isJointMovement)
+                if (isJointMovement && currentLoc is TxRoboticViaLocationOperation)
                 {
                     // if the current motion already has some operations, just add the current one
                     if (currentMotion.Count > 0)
                     {
                         currentMotion.Add(currentLoc);
                     }
-                    // otherwise add the both the previous and the current location
+                    // otherwise add both the previous and the current location
                     else
                     {
                         currentMotion.Add(previousLoc);
                         currentMotion.Add(currentLoc);
                     }
                 }
-                else
+                else // we only want to include linear movements and non-via operations as the start of the next motion
                 {
                     if (currentMotion.Count > 0)
                     {
                         motions.Add(currentMotion);
-                        currentMotion = new TxObjectList<TxRoboticViaLocationOperation>();
+                        currentMotion = new TxObjectList<ITxRoboticLocationOperation>();
                     }
                 }
             }
@@ -176,7 +183,7 @@ namespace TxCommand1.Operations
         /// </summary>
         /// <param name="motions">A list of motions, where each motion is a sequence of robotic via operations.</param>
         /// <returns>A list of optimizable motions corresponding to each motion.</returns>
-        public List<OptimizableMotion> CreateOptimizableMotions(List<TxObjectList<TxRoboticViaLocationOperation>> motions)
+        public List<OptimizableMotion> CreateOptimizableMotions(List<TxObjectList<ITxRoboticLocationOperation>> motions)
         {
             if (motions == null)
                 throw new ArgumentNullException(nameof(motions));

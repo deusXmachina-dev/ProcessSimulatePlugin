@@ -83,7 +83,7 @@ namespace TxCommand1.Operations
 
         private List<OptimizableMotion> GetSortedOptimizableMotions(ITxOperation operation)
         {
-            List<TxObjectList<TxRoboticViaLocationOperation>> rawMotions = 
+            List<TxObjectList<ITxRoboticLocationOperation>> rawMotions = 
                 _utilities.GetMotions(operation);
             List<OptimizableMotion> optimizableMotions = 
                 _utilities.CreateOptimizableMotions(rawMotions);
@@ -110,20 +110,19 @@ namespace TxCommand1.Operations
                 motion.ModifyVelocity(targetVelocity);
                 
                 _utilities.RunSimulationAndGetDurations(operation);
-                if (IsOverDurationLimit(operation, limitDuration))
+                while (IsOverDurationLimit(operation, limitDuration))
                 {
-                    RollbackVelocityChange(motion, previousVelocity, targetVelocity);
+                    {
+                        targetVelocity = Math.Min(targetVelocity + VelocityIncrementStep, previousVelocity);
+                        motion.ModifyVelocity(targetVelocity);
+                        _utilities.RunSimulationAndGetDurations(operation);
+                    }
+                    if (IsOverDurationLimit(operation, limitDuration) && targetVelocity >= previousVelocity)
+                    {
+                        // This is not expected, raise some exception for invalid state
+                        throw new InvalidOperationException("Invalid optimization state: Rollback of velocity modification failed.");
+                    }
                 }
-            }
-        }
-
-        private void RollbackVelocityChange(OptimizableMotion motion, 
-            double previousVelocity, double targetVelocity)
-        {
-            while (targetVelocity < previousVelocity)
-            {
-                targetVelocity = Math.Min(targetVelocity + VelocityIncrementStep, previousVelocity);
-                motion.ModifyVelocity(targetVelocity);
             }
         }
 

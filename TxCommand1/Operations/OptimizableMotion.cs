@@ -12,7 +12,7 @@ namespace TxCommand1.Operations
         /// <summary>
         /// Gets the original sequence of robotic via location operations.
         /// </summary>
-        private TxObjectList<TxRoboticViaLocationOperation> ViaLocations { get; set; }
+        private TxObjectList<ITxRoboticLocationOperation> ViaLocations { get; set; }
 
         /// <summary>
         /// Gets the total distance traveled during the motion.
@@ -39,7 +39,7 @@ namespace TxCommand1.Operations
         /// Initializes a new instance of the OptimizableMotion class and calculates distance metrics.
         /// </summary>
         /// <param name="viaLocations">The sequence of robotic via location operations.</param>
-        public OptimizableMotion(TxObjectList<TxRoboticViaLocationOperation> viaLocations)
+        public OptimizableMotion(TxObjectList<ITxRoboticLocationOperation> viaLocations)
         {
             ViaLocations = viaLocations ?? throw new ArgumentNullException(nameof(viaLocations));
             ModifyVelocity(100); // Default to 100% velocity
@@ -56,8 +56,13 @@ namespace TxCommand1.Operations
             
             for (int i = 1; i < ViaLocations.Count; i++)
             {
-                var previousLoc = ViaLocations[i - 1];
-                var currentLoc = ViaLocations[i];
+                ITxLocatableObject previousLoc = ViaLocations[i - 1] as ITxLocatableObject;
+                ITxLocatableObject currentLoc = ViaLocations[i] as ITxLocatableObject;
+
+                if (previousLoc == null || currentLoc == null)
+                {
+                    continue;
+                }
                 
                 // Get the absolute positions for each via location
                 TxVector previousPosition = previousLoc.AbsoluteLocation.Translation;

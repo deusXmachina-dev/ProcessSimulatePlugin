@@ -45,15 +45,6 @@ namespace TxCommand1.Operations
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OperationResultCollection"/> class
-        /// with the specified initial capacity.
-        /// </summary>
-        public OperationResultCollection(int capacity)
-        {
-            _operations = new List<OperationResult>(capacity);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OperationResultCollection"/> class
         /// with operation results from the specified collection.
         /// </summary>
         public OperationResultCollection(IEnumerable<OperationResult> operations)
@@ -65,78 +56,11 @@ namespace TxCommand1.Operations
         }
 
         /// <summary>
-        /// Adds an operation result to the collection.
-        /// </summary>
-        public void Add(OperationResult operationResult)
-        {
-            _operations.Add(operationResult);
-        }
-
-        /// <summary>
         /// Adds an operation result to the collection using the operation name and duration.
         /// </summary>
         public void Add(string operationName, double duration)
         {
             _operations.Add(new OperationResult(operationName, duration));
-        }
-
-        /// <summary>
-        /// Adds multiple operation results to the collection.
-        /// </summary>
-        public void AddRange(IEnumerable<OperationResult> operationResults)
-        {
-            if (operationResults == null)
-                throw new ArgumentNullException(nameof(operationResults));
-
-            _operations.AddRange(operationResults);
-        }
-
-        /// <summary>
-        /// Removes the first occurrence of the specified operation result from the collection.
-        /// </summary>
-        public bool Remove(OperationResult operationResult)
-        {
-            return _operations.Remove(operationResult);
-        }
-
-        /// <summary>
-        /// Removes the operation result at the specified index.
-        /// </summary>
-        public void RemoveAt(int index)
-        {
-            _operations.RemoveAt(index);
-        }
-
-        /// <summary>
-        /// Removes all operation results from the collection.
-        /// </summary>
-        public void Clear()
-        {
-            _operations.Clear();
-        }
-
-        /// <summary>
-        /// Determines whether the collection contains the specified operation result.
-        /// </summary>
-        public bool Contains(OperationResult operationResult)
-        {
-            return _operations.Contains(operationResult);
-        }
-
-        /// <summary>
-        /// Calculates the total duration of all operations in the collection.
-        /// </summary>
-        public double GetTotalDuration()
-        {
-            return _operations.Sum(op => op.Duration);
-        }
-
-        /// <summary>
-        /// Gets the average duration of all operations in the collection.
-        /// </summary>
-        public double GetAverageDuration()
-        {
-            return _operations.Count == 0 ? 0.0 : _operations.Average(op => op.Duration);
         }
 
         /// <summary>
