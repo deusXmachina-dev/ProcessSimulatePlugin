@@ -1,6 +1,6 @@
 using Tecnomatix.Engineering;
 
-namespace TxCommand1.Operations
+namespace DeusXMachinaCommand.Operations
 {
     /// <summary>
     /// Interface for energy optimization routines for operations.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tecnomatix.Engineering;
 
-namespace TxCommand1.Operations
+namespace DeusXMachinaCommand.Operations
 {
     /// <summary>
     /// Heuristic-based implementation of energy optimization.

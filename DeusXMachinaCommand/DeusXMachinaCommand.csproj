@@ -7,8 +7,8 @@
     <ProjectGuid>{FDCCCEBA-0EF0-444C-8CAF-057D94B0A67F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TxCommand1</RootNamespace>
-    <AssemblyName>TxCommand1</AssemblyName>
+    <RootNamespace>DeusXMachinaCommand</RootNamespace>
+    <AssemblyName>DeusXMachinaCommand</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TxCommand1 {
+namespace DeusXMachinaCommand {
     using System;
     
     
@@ -38,7 +38,7 @@ namespace TxCommand1 {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TxCommand1.StringTable", typeof(StringTable).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DeusXMachinaCommand.StringTable", typeof(StringTable).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

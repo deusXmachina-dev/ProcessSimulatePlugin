@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using Tecnomatix.Engineering;
 
-namespace TxCommand1.Operations
+namespace DeusXMachinaCommand.Operations
 {
     /// <summary>
     /// Represents a motion sequence with calculated properties for energy optimization.

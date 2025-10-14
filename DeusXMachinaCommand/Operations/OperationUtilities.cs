@@ -5,7 +5,7 @@ using System.Linq;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
 
-namespace TxCommand1.Operations
+namespace DeusXMachinaCommand.Operations
 {
     /// <summary>
     /// Utility helpers for inspecting and modifying Tecnomatix operations.

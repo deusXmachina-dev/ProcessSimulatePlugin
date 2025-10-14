@@ -1,7 +1,7 @@
 using Tecnomatix.Engineering;
-using TxCommand1.Forms;
+using DeusXMachinaCommand.Forms;
 
-namespace TxCommand1
+namespace DeusXMachinaCommand
 {
     public class TxDxmHeuristicEnergyOptimizer : TxButtonCommand
     {

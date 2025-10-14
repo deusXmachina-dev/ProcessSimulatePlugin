@@ -2,9 +2,9 @@ using System;
 using System.Windows.Forms;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Ui;
-using TxCommand1.Operations;
+using DeusXMachinaCommand.Operations;
 
-namespace TxCommand1.Forms
+namespace DeusXMachinaCommand.Forms
 {
 	public partial class TxOperationForm : TxForm
 	{

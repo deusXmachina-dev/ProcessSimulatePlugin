@@ -1,7 +1,7 @@
 using System;
 using Tecnomatix.Engineering;
 
-namespace TxCommand1
+namespace DeusXMachinaCommand
 {
     /// <summary>
     /// Utility class for working with Tecnomatix objects.

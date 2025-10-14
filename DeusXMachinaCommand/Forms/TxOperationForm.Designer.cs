@@ -1,4 +1,4 @@
-namespace TxCommand1.Forms
+namespace DeusXMachinaCommand.Forms
 {
 	partial class TxOperationForm
 	{

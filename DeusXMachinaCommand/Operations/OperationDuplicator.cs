@@ -5,7 +5,7 @@ using Tecnomatix.Engineering;
 
 // (if you use clipboard helpers)
 
-namespace TxCommand1.Operations
+namespace DeusXMachinaCommand.Operations
 {
     /// <summary>
     /// Provides functionality to duplicate operations within Tecnomatix Engineering environments.
