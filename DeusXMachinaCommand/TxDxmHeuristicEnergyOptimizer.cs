@@ -14,5 +14,29 @@ namespace DeusXMachinaCommand
             TxOperationForm robotForm = new TxOperationForm();
             robotForm.Show();
         }
+
+        public override string Bitmap
+        {
+            get
+            {
+                return "logo_16.bmp";
+            }   
+        }
+
+        public override string MediumBitmap
+        {
+            get
+            {
+                return "logo_24.bmp";
+            }
+        }
+
+        public override string LargeBitmap
+        {
+            get
+            {
+                return "logo_32.png";
+            }
+        }
     }
 }   

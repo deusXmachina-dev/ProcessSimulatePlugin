@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TecnomatixConfigurationData>
+  <ConfigurationsSection>
+    <Configuration ID="viewer" Name="viewer">
+      <DotNetCommands>
+        <Assembly File="DotNetCommands\DeusXMachinaCommand.dll">
+          <DotNetCommand Namespace="DeusXMachinaCommand" ClassName="TxDxmHeuristicEnergyOptimizer" />
+        </Assembly>
+      </DotNetCommands>
+    </Configuration>
+    <Configuration ID="newassemblertc" Name="newassemblertc">
+      <DotNetCommands>
+        <Assembly File="DotNetCommands\DeusXMachinaCommand.dll">
+          <DotNetCommand Namespace="DeusXMachinaCommand" ClassName="TxDxmHeuristicEnergyOptimizer" />
+        </Assembly>
+      </DotNetCommands>
+    </Configuration>
+    <Configuration ID="newassembler" Name="newassembler">
+      <DotNetCommands>
+        <Assembly File="DotNetCommands\DeusXMachinaCommand.dll">
+          <DotNetCommand Namespace="DeusXMachinaCommand" ClassName="TxDxmHeuristicEnergyOptimizer" />
+        </Assembly>
+      </DotNetCommands>
+    </Configuration>
+    <Configuration ID="newviewer" Name="newviewer">
+      <DotNetCommands>
+        <Assembly File="DotNetCommands\DeusXMachinaCommand.dll">
+          <DotNetCommand Namespace="DeusXMachinaCommand" ClassName="TxDxmHeuristicEnergyOptimizer" />
+        </Assembly>
+      </DotNetCommands>
+    </Configuration>
+  </ConfigurationsSection>
+</TecnomatixConfigurationData>

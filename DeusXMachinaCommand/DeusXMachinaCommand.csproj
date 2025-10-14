@@ -90,6 +90,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringTable.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="logo_16.bmp" />
+    <EmbeddedResource Include="logo_24.bmp" />
+    <EmbeddedResource Include="logo_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
