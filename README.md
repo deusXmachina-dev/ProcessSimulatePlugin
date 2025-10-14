@@ -3,10 +3,10 @@
 # Chapter 1: The Who, the What, and the Why
 
 We're currently a team of two:
-- @pungys97
-- @FilipKubis
+- [@pungys97](https://github.com/pungys97)
+- [@FilipKubis](https://github.com/FilipKubis)
 
-Both proudly from Czechia, both software engineers with a shared origin story in mechanical engineering and robotics.
+Both software engineers with a shared origin story in mechanical engineering and robotics.
 We started with robots, drifted into software — because, well, software is fun… but robots are funnerer 🤖💥
 
 We're generally optimistic folks, though a bit frustrated with the current industry mood in Europe. There's a ton of cool stuff to be built, and this project is our first step toward building the tools — and the feedback loops — to make that happen.
@@ -38,5 +38,5 @@ The struggle?
 Put it all together and, well… we're kinda cooked.
 
 The way out?
-👉 Either innovate like crazy
-👉 Or fix the demographics (more shabonking — though that part's not going on GitHub 😅)
+- 👉 Either innovate like crazy
+- 👉 Or fix the demographics (more shabonking — though that part's not going on GitHub 😅)
