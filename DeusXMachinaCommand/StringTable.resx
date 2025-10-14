@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CATEGORY" xml:space="preserve">
-    <value>Test</value>
+    <value>Energy optimization</value>
   </data>
   <data name="NAME" xml:space="preserve">
-    <value>Path energy optimization</value>
+    <value>Simple energy optimizer</value>
   </data>
   <data name="MODEL_OBJECTS_COMMAND_NAME" xml:space="preserve">
     <value>Model objects</value>

@@ -60,7 +60,7 @@ namespace DeusXMachinaCommand {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test.
+        ///   Looks up a localized string similar to Energy optimization.
         /// </summary>
         internal static string CATEGORY {
             get {
@@ -78,7 +78,7 @@ namespace DeusXMachinaCommand {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path energy optimization.
+        ///   Looks up a localized string similar to Simple energy optimizer.
         /// </summary>
         internal static string NAME {
             get {
