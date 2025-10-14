@@ -3,7 +3,7 @@ using TxCommand1.Forms;
 
 namespace TxCommand1
 {
-    public class TxHelloWorldCmd : TxButtonCommand
+    public class TxDxmHeuristicEnergyOptimizer : TxButtonCommand
     {
         public override string Category => StringTable.CATEGORY;
 

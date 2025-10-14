@@ -80,7 +80,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StringTable.resx</DependentUpon>
     </Compile>
-    <Compile Include="TxHelloWorldCmd.cs" />
+    <Compile Include="TxDxmHeuristicEnergyOptimizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\TxOperationForm.resx">
