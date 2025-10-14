@@ -38,10 +38,13 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Main plugin DLL (required)
-Source: "DeusXMachinaCommand\bin\Release\DeusXMachinaCommand.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "DeusXMachinaCommand\bin\Release\DeusXMachinaCommand.dll"; DestDir: "{app}\DotNetCommands"; Flags: ignoreversion
 ; NOTE: PDB files are not included in production installer (only needed for development/debugging)
 ; NOTE: Tecnomatix.Engineering.Olp.dll is not included as it should already exist in Tecnomatix installation
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+; NOTE: Don't use "Flags: ignoreversion" on any shared system Files
+
+; XML registration of the plugin for process simulate applications
+Source: "installer_resources\DeusXMachinaCommand.xml"; DestDir: "{app}\DotNetExternalApplications"; Flags: ignoreversion 
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
@@ -106,4 +109,5 @@ begin
 end;
 
 [UninstallDelete]
-Type: files; Name: "{app}\DeusXMachinaCommand.dll"
+Type: files; Name: "{app}\DotNetCommands\DeusXMachinaCommand.dll"
+Type: files; Name: "{app}\DotNetExternalApplications\DeusXMachinaCommand.xml"
