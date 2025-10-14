@@ -40,11 +40,13 @@ The version is currently set to match `AssemblyInfo.cs` (1.0.0.0). Update both f
 - `DeusXMachinaCommand_Setup.iss` (line 6)
 
 ### Installation Path
-The installer locates your Process Simulate installation automatically. It checks the registry:
+The installer automatically detects your Process Simulate installation from the registry:
 
 - `HKLM\\SOFTWARE\\Tecnomatix\\eMPower\\eMPowerDir`
 
-If no valid path is found, the installer prompts you to manually enter the root Tecnomatix installation directory (for example `C:\\Program Files\\Tecnomatix_2502`). The path must contain the `eMPower\\DotNetCommands` folder. The plugin will be installed to that folder.
+The default installation directory will be set to `{Detected Path}\\DotNetCommands`.
+
+**You can override this path** during installation if needed. The installer will validate your selection and warn you if the path doesn't appear to be a valid Process Simulate installation.
 
 ### Including Debug Symbols (Development Only)
 By default, PDB files are excluded. If you need them for development/debugging, add this line to the `[Files]` section:
@@ -64,10 +66,11 @@ The installer packages and installs:
 ## Installation Process
 
 1. Run `DeusXMachinaCommand_Setup_1.0.0.0.exe`
-2. The installer locates Tecnomatix Process Simulate via registry and validates the path
-3. If not found, you will be prompted to enter the path manually (must contain `eMPower\\DotNetCommands`)
-4. Files are copied to: `{Tecnomatix}\eMPower\DotNetCommands\`
-5. Users must restart Tecnomatix eMPower to load the new plugin
+2. The installer detects your Process Simulate installation path from the registry
+3. You can review and change the installation directory if needed
+4. The installer validates the selected path
+5. Files are copied to the specified directory (default: `{Tecnomatix}\eMPower\DotNetCommands\`)
+6. Restart Tecnomatix eMPower to load the new plugin
 
 ## Uninstallation
 
@@ -77,11 +80,12 @@ Users can uninstall via:
 
 ## Troubleshooting
 
-### "Tecnomatix installation not found"
-If automatic detection fails:
-- Ensure Siemens Tecnomatix (Process Simulate) is installed on your system
-- Verify the registry key exists: `HKLM\SOFTWARE\Tecnomatix\eMPower\eMPowerDir`
-- When prompted, enter the root Tecnomatix directory that contains `eMPower\\DotNetCommands`
+### "Path does not appear to be valid"
+If the installer warns about the installation path:
+- The default path is detected from: `HKLM\SOFTWARE\Tecnomatix\eMPower\eMPowerDir`
+- If not detected, manually select the correct path ending with `\DotNetCommands`
+- Example: `C:\Program Files\Tecnomatix_2502\eMPower\DotNetCommands`
+- Ensure the path contains or is within a valid Process Simulate installation
 
 ### "Cannot open file" errors during build
 - Ensure Visual Studio is not running

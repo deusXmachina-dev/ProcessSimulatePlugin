@@ -16,9 +16,11 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={code:GetInstallPath}
+DefaultDirName={code:GetDefaultInstallDir}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
+; Allow user to select installation directory
+UsePreviousAppDir=no
 OutputDir=DeusXMachinaCommand\installer_output
 OutputBaseFilename=DeusXMachinaCommand_Setup_{#MyAppVersion}
 Compression=lzma
@@ -45,78 +47,50 @@ Source: "DeusXMachinaCommand\bin\Release\DeusXMachinaCommand.dll"; DestDir: "{ap
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Code]
-var
-  TecnomatixInstallPath: String;
-
-function ValidateTecnomatixPath(Path: String): Boolean;
-var
-  DotNetCommandsPath: String;
-begin
-  Result := False;
-  
-  // Remove trailing backslash if present
-  if Copy(Path, Length(Path), 1) = '\' then
-    Path := Copy(Path, 1, Length(Path) - 1);
-  
-  // Check if base path exists
-  if not DirExists(Path) then
-  begin
-    MsgBox('The specified directory does not exist:' + #13#10 +
-           Path + #13#10#13#10 +
-           'Please verify the path is correct.', 
-           mbError, MB_OK);
-    Exit;
-  end;
-  
-  // Check for DotNetCommands folder
-  DotNetCommandsPath := Path + '\DotNetCommands';
-  if not DirExists(DotNetCommandsPath) then
-  begin
-    MsgBox('This does not appear to be a valid Process Simulate installation path.' + #13#10#13#10 +
-           'The following required folder was not found:' + #13#10 +
-           DotNetCommandsPath + #13#10#13#10 +
-           'Please ensure you specify the root Tecnomatix installation directory' + #13#10 +
-           'that contains the DotNetCommands folder structure.', 
-           mbError, MB_OK);
-    Exit;
-  end;
-  
-  Result := True;
-end;
-
-function GetInstallPath(Param: String): String;
-begin
-  Result := TecnomatixInstallPath + '\DotNetCommands';
-end;
-
-function InitializeSetup(): Boolean;
+function GetDefaultInstallDir(Param: String): String;
 var
   RegistryPath: String;
 begin
-  Result := False;
-  
-  // Try to get path from registry first (check eMPower key)
+  // Try to get path from registry (check eMPower key)
   if RegQueryStringValue(HKLM, 'SOFTWARE\Tecnomatix\eMPower', 'eMPowerDir', RegistryPath) then
   begin
     // Remove trailing backslash if present
     if Copy(RegistryPath, Length(RegistryPath), 1) = '\' then
       RegistryPath := Copy(RegistryPath, 1, Length(RegistryPath) - 1);
     
-    if ValidateTecnomatixPath(RegistryPath) then
+    Result := RegistryPath;
+  end
+  else
+  begin
+    // Fallback default if registry not found
+    Result := ExpandConstant('{autopf}\Tecnomatix\eMPower');
+  end;
+end;
+
+function NextButtonClick(CurPageID: Integer): Boolean;
+var
+  InstallDir: String;
+begin
+  Result := True;
+  
+  // Validate on the directory selection page
+  if CurPageID = wpSelectDir then
+  begin
+    InstallDir := WizardDirValue;
+    
+    // Check if directory exists or can be created
+    if not DirExists(InstallDir + '\DotNetCommands') then
     begin
-      TecnomatixInstallPath := RegistryPath;
-      Result := True;
+      MsgBox('The installation path does not appear to be valid:' + #13#10 +
+              InstallDir + #13#10#13#10 +
+              'Please ensure you select a valid Process Simulate installation directory' + #13#10 +
+              'that contains the DotNetCommands folder (or where it can be created).' + #13#10#13#10 +
+              'Example: C:\Program Files\Tecnomatix_2502\eMPower', 
+              mbError, MB_OK);
+      Result := False;
       Exit;
     end;
   end;
-  
-  // Registry path not found or invalid, show error and exit
-  MsgBox('Process Simulate installation not detected in registry.' + #13#10#13#10 +
-         'This plugin requires Siemens Tecnomatix Process Simulate to be installed.' + #13#10 +
-         'Please install Process Simulate before installing this plugin.' + #13#10#13#10 +
-         'Installation will now exit.', 
-         mbError, MB_OK);
-  Exit;
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
