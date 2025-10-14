@@ -121,7 +121,7 @@
     <value>Energy optimization</value>
   </data>
   <data name="NAME" xml:space="preserve">
-    <value>Simple energy optimizer</value>
+    <value>DXM simple energy optimizer</value>
   </data>
   <data name="MODEL_OBJECTS_COMMAND_NAME" xml:space="preserve">
     <value>Model objects</value>

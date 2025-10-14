@@ -78,7 +78,7 @@ namespace DeusXMachinaCommand {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Simple energy optimizer.
+        ///   Looks up a localized string similar to DXM simple energy optimizer.
         /// </summary>
         internal static string NAME {
             get {
