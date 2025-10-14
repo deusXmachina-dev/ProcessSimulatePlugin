@@ -17,6 +17,7 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={code:GetDefaultInstallDir}
+AppendDefaultDirName=no
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 ; Allow user to select installation directory
