@@ -12,7 +12,7 @@ We're currently a team of two:
 - [@FilipKubis](https://github.com/FilipKubis)
 
 Both software engineers with a shared origin story in **mechanical engineering and robotics**.  
-We started with robots, drifted into software — because, well, software is fun… but robots are **funnerer** (until they take over).
+We started with robots, drifted into software — because, well, software is fun… but now we're fiddling again with robots, because they are **funnerer** (until they take over).
 
 We're optimistic by default — just mildly annoyed by the current mood in the European industry scene.  
 There's a *ton* of cool stuff to be built, and this project is our first step toward building the tools — and the feedback loops — to make that happen.
