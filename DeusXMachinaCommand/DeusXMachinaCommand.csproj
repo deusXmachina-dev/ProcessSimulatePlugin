@@ -70,7 +70,6 @@
       <DependentUpon>TxOperationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Operations\OperationResult.cs" />
-    <Compile Include="Operations\OperationResultCollection.cs" />
     <Compile Include="Operations\OperationDuplicator.cs" />
     <Compile Include="Operations\OperationUtilities.cs" />
     <Compile Include="Operations\IOperationEnergyOptimization.cs" />

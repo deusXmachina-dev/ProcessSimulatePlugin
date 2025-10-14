@@ -46,15 +46,13 @@ namespace DeusXMachinaCommand.Operations
         /// <summary>
         /// Runs the simulation for the given operation and returns per-leaf durations.
         /// </summary>
-        public OperationResultCollection RunSimulationAndGetDurations(ITxOperation operation)
+        public void RunSimulationAndGetDurations(ITxOperation operation)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
 
             if (TxApplication.ActiveDocument == null)
                 throw new InvalidOperationException("No active document available for simulation.");
-
-            var results = new OperationResultCollection();
 
             try
             {
@@ -70,15 +68,6 @@ namespace DeusXMachinaCommand.Operations
                     TxApplication.ActiveDocument.CurrentOperation = operation;
                     simPlayer.PlaySilently();
                     simPlayer.Rewind();
-
-                    var leafOperations = GetLocationOperations(operation);
-                    foreach (var leafOp in leafOperations)
-                    {
-                        if (leafOp != null && !string.IsNullOrEmpty(leafOp.Name))
-                        {
-                            results.Add(leafOp.Name, leafOp.Duration);
-                        }
-                    }
                 }
                 finally
                 {
@@ -89,8 +78,6 @@ namespace DeusXMachinaCommand.Operations
             {
                 throw new InvalidOperationException($"Failed to run simulation for operation '{operation.Name}': {ex.Message}", ex);
             }
-
-            return results;
         }
 
         /// <summary>
