@@ -40,11 +40,11 @@ The version is currently set to match `AssemblyInfo.cs` (1.0.0.0). Update both f
 - `DeusXMachinaCommand_Setup.iss` (line 6)
 
 ### Installation Path
-The installer **requires** Tecnomatix to be installed. It detects the installation from registry:
-```
-HKLM\SOFTWARE\Siemens\Tecnomatix\InstallPath
-```
-If Tecnomatix is not found, the installer will exit with an error message.
+The installer locates your Process Simulate installation automatically. It checks the registry:
+
+- `HKLM\\SOFTWARE\\Tecnomatix\\eMPower\\eMPowerDir`
+
+If no valid path is found, the installer prompts you to manually enter the root Tecnomatix installation directory (for example `C:\\Program Files\\Tecnomatix_2502`). The path must contain the `eMPower\\DotNetCommands` folder. The plugin will be installed to that folder.
 
 ### Including Debug Symbols (Development Only)
 By default, PDB files are excluded. If you need them for development/debugging, add this line to the `[Files]` section:
@@ -64,8 +64,8 @@ The installer packages and installs:
 ## Installation Process
 
 1. Run `DeusXMachinaCommand_Setup_1.0.0.0.exe`
-2. The installer validates that Tecnomatix is installed
-3. If Tecnomatix is not found, the installer exits with an error message
+2. The installer locates Tecnomatix Process Simulate via registry and validates the path
+3. If not found, you will be prompted to enter the path manually (must contain `eMPower\\DotNetCommands`)
 4. Files are copied to: `{Tecnomatix}\eMPower\DotNetCommands\`
 5. Users must restart Tecnomatix eMPower to load the new plugin
 
@@ -78,11 +78,10 @@ Users can uninstall via:
 ## Troubleshooting
 
 ### "Tecnomatix installation not found"
-If you receive this error:
-- Ensure Siemens Tecnomatix is installed on your system
-- Verify the registry key exists: `HKLM\SOFTWARE\Siemens\Tecnomatix`
-- Install Tecnomatix before attempting to install this plugin
-- If Tecnomatix is installed but not detected, verify it was installed correctly and the registry entry exists
+If automatic detection fails:
+- Ensure Siemens Tecnomatix (Process Simulate) is installed on your system
+- Verify the registry key exists: `HKLM\SOFTWARE\Tecnomatix\eMPower\eMPowerDir`
+- When prompted, enter the root Tecnomatix directory that contains `eMPower\\DotNetCommands`
 
 ### "Cannot open file" errors during build
 - Ensure Visual Studio is not running
