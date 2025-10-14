@@ -12,12 +12,14 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <!-- Tecnomatix installation directory - can be overridden via environment variable -->
+    <TecnomatixDir Condition="'$(TecnomatixDir)' == ''">C:\Program Files\Tecnomatix_2502\eMPower</TecnomatixDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\Program Files\Tecnomatix_2502\eMPower\DotNetCommands\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,15 +47,15 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Tecnomatix.Engineering">
-      <HintPath>..\..\..\..\..\..\Program Files\Tecnomatix_2502\eMPower\Tecnomatix.Engineering.dll</HintPath>
+      <HintPath>$(TecnomatixDir)\Tecnomatix.Engineering.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tecnomatix.Engineering.Olp">
-      <HintPath>..\..\..\..\..\..\Program Files\Tecnomatix_2502\eMPower\Tecnomatix.Engineering.Olp.dll</HintPath>
+      <HintPath>$(TecnomatixDir)\Tecnomatix.Engineering.Olp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tecnomatix.Engineering.Ui">
-      <HintPath>..\..\..\..\..\..\Program Files\Tecnomatix_2502\eMPower\Tecnomatix.Engineering.Ui.dll</HintPath>
+      <HintPath>$(TecnomatixDir)\Tecnomatix.Engineering.Ui.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
