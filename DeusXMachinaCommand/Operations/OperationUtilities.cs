@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
 
@@ -93,27 +91,6 @@ namespace DeusXMachinaCommand.Operations
             }
 
             return results;
-        }
-
-        /// <summary>
-        /// Sets the joint speed parameter for all joint motions within the operation tree.
-        /// </summary>
-        public void ModifyOperationSpeed(ITxOperation operation, int speed)
-        {
-            TxObjectList<ITxRoboticLocationOperation> leafOperations = GetLocationOperations(operation);
-
-            var jointMotionOperations = leafOperations
-                .Where(o => _rcsService.GetLocationMotionType(o) == TxMotionType.Joint);
-
-            foreach (var op in jointMotionOperations)
-            {
-                Debug.WriteLine($"Setting speed for {op.Name} to {speed}");
-                if (op.GetParameter("RRS_JOINT_SPEED") is TxRoboticDoubleParam speedParam)
-                {
-                    speedParam.Value = speed;
-                    op.SetParameter(speedParam);
-                }
-            }
         }
 
         /// <summary>

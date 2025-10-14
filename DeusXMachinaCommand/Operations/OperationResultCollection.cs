@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -90,7 +89,7 @@ namespace DeusXMachinaCommand.Operations
         /// </summary>
         public override string ToString()
         {
-            return ToString("F3", true);
+            return ToString("F3");
         }
 
         /// <summary>

@@ -7,6 +7,8 @@ namespace DeusXMachinaCommand.Operations
 {
     /// <summary>
     /// Heuristic-based implementation of energy optimization.
+    /// Tries to optimize operations starting from the "most promising" motions first,
+    /// using a two-pass approach with different target velocities and a bit of randomness.
     /// </summary>
     public class HeuristicEnergyOptimizer : IOperationEnergyOptimization
     {
