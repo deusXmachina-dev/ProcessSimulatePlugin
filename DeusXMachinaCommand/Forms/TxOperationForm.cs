@@ -22,13 +22,13 @@ namespace DeusXMachinaCommand.Forms
 				var result = optimizer.Optimize(operation, _durationInput.Value);
 				if (result == null)
 				{
-					MessageBox.Show($@"No optimization found within the duration limit of {_durationInput.Value}.", @"Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					MessageBox.Show($"No optimization found within the duration limit of {_durationInput.Value}.", "Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 				else
 				{
 					var optimized = result.Operation;
-					MessageBox.Show($@"Optimized operation: '{optimized?.Name}'\nDuration: {optimized?.Duration:F3}s\nEstimated energy savings: {result.EnergySavingsPercent:F1}%",
-						@"Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					MessageBox.Show($"Optimized operation: '{optimized?.Name}'\n\nDuration: {optimized?.Duration:F3}s\n\nEstimated energy savings: {result.EnergySavingsPercent:F1}%",
+						"Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 			}
 		}

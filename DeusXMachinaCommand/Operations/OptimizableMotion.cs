@@ -51,6 +51,7 @@ namespace DeusXMachinaCommand.Operations
             TxObjectList<ITxRoboticLocationOperation> waypointListSpeed50)
         {
             WaypointList = waypointListSpeed100 ?? throw new ArgumentNullException(nameof(waypointListSpeed100));
+            ModifyVelocity(100);
             CalculateDistances();
             ComputeEnergyDemandScore(waypointListSpeed100, waypointListSpeed50);
         }
