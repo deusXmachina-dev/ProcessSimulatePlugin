@@ -52,7 +52,7 @@ namespace DeusXMachinaCommand.Operations
         /// <summary>
         /// Optimizes the operation using heuristic approaches.
         /// </summary>
-        public ITxOperation Optimize(ITxOperation operation, double limitDuration)
+        public EnergyOptimizationResult Optimize(ITxOperation operation, double limitDuration)
         {
             ITxOperation optimizedOperation = PrepareOperationForOptimization(operation);
             _utilities.ModifyOperationSpeed(optimizedOperation, 100);
@@ -69,18 +69,20 @@ namespace DeusXMachinaCommand.Operations
             _utilities.RunSimulationAndGetDurations(operationHalfSpeed);
 
             List<OptimizableMotion> sortedMotions = GetSortedOptimizableMotions(optimizedOperation, operationHalfSpeed);
-            
+            operationHalfSpeed.Delete();
+
             // Two-pass optimization: first conservative (60%), then aggressive (45%)
             // to find the optimal balance between energy savings and time constraints
             OptimizeMotionsWithVelocityTarget(sortedMotions, optimizedOperation, 
                 FirstPassTargetVelocity, limitDuration);
             OptimizeMotionsWithVelocityTarget(sortedMotions, optimizedOperation, 
                 SecondPassTargetVelocity, limitDuration);
-            
+
+
             double savingsPercent = EstimateEnergySavingsPercent(sortedMotions, optimizedOperation);
 
             optimizedOperation.Name = $"En. optimal ({limitDuration:F2} s) {operation.Name}";
-            return optimizedOperation;
+            return new EnergyOptimizationResult(optimizedOperation, savingsPercent);
         }
 
         private double EstimateEnergySavingsPercent(

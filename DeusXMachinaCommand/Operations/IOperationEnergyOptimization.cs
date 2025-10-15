@@ -11,7 +11,7 @@ namespace DeusXMachinaCommand.Operations
         /// Optimizes the operation to meet the duration limit.
         /// The returned operation is a duplicated, renamed variant; caller owns its lifecycle.
         /// </summary>
-        ITxOperation Optimize(ITxOperation operation, double limitDuration);
+        EnergyOptimizationResult Optimize(ITxOperation operation, double limitDuration);
     }
 }
 

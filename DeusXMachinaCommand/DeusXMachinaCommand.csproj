@@ -73,6 +73,7 @@
     <Compile Include="Operations\OperationDuplicator.cs" />
     <Compile Include="Operations\OperationUtilities.cs" />
     <Compile Include="Operations\IOperationEnergyOptimization.cs" />
+    <Compile Include="Operations\EnergyOptimizationResult.cs" />
     <Compile Include="Operations\HeuristicEnergyOptimizer.cs" />
     <Compile Include="Operations\OptimizableMotion.cs" />
     <Compile Include="Operations\EnergyOptimizationConstants.cs" />

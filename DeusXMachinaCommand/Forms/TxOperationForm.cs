@@ -19,14 +19,17 @@ namespace DeusXMachinaCommand.Forms
 			if (_operationPicker.Object is ITxOperation operation)
 			{
 				var optimizer = new HeuristicEnergyOptimizer(new OperationUtilities());
-				var optimized = optimizer.Optimize(operation, _durationInput.Value);
-				if (optimized == null)
+				var result = optimizer.Optimize(operation, _durationInput.Value);
+				if (result == null)
 				{
 					MessageBox.Show($@"No optimization found within the duration limit of {_durationInput.Value}.", @"Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
-				
-				// todo: retrieve energy savings for the optimization and display this along with the information
-				//   about the optimized operation
+				else
+				{
+					var optimized = result.Operation;
+					MessageBox.Show($@"Optimized operation: '{optimized?.Name}'\nDuration: {optimized?.Duration:F3}s\nEstimated energy savings: {result.EnergySavingsPercent:F1}%",
+						@"Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
 			}
 		}
 		
