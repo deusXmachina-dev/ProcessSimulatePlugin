@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Tecnomatix.Engineering;
 using Tecnomatix.Engineering.Olp;
 
@@ -81,6 +83,27 @@ namespace DeusXMachinaCommand.Operations
         }
 
         /// <summary>
+        /// Sets the joint speed parameter for all joint motions within the operation tree.
+        /// </summary>
+        public void ModifyOperationSpeed(ITxOperation operation, int speed)
+        {
+            TxObjectList<ITxRoboticLocationOperation> leafOperations = GetLocationOperations(operation);
+
+            var jointMotionOperations = leafOperations
+                .Where(o => _rcsService.GetLocationMotionType(o) == TxMotionType.Joint);
+
+            foreach (var op in jointMotionOperations)
+            {
+                Debug.WriteLine($"Setting speed for {op.Name} to {speed}");
+                if (op.GetParameter("RRS_JOINT_SPEED") is TxRoboticDoubleParam speedParam)
+                {
+                    speedParam.Value = speed;
+                    op.SetParameter(speedParam);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets all motions from the operation. Each motion is a sequence of joint operations.
         /// </summary>
         /// <param name="operation">The operation to extract motions from.</param>
@@ -146,19 +169,20 @@ namespace DeusXMachinaCommand.Operations
         /// Creates optimizable motion representations for all motions in a list.
         /// </summary>
         /// <param name="motions">A list of motions, where each motion is a sequence of robotic via operations.</param>
+        /// <param name="motionsAtHalfSpeed">A list of motions at half-speed, where each motion is a sequence of robotic via operations.</param>
         /// <returns>A list of optimizable motions corresponding to each motion.</returns>
-        public List<OptimizableMotion> CreateOptimizableMotions(List<TxObjectList<ITxRoboticLocationOperation>> motions)
+        public List<OptimizableMotion> CreateOptimizableMotions(List<TxObjectList<ITxRoboticLocationOperation>> motions,
+            List<TxObjectList<ITxRoboticLocationOperation>> motionsAtHalfSpeed)
         {
             if (motions == null)
                 throw new ArgumentNullException(nameof(motions));
+            if (motionsAtHalfSpeed == null)
+                throw new ArgumentNullException(nameof(motionsAtHalfSpeed));
 
-            var optimizableMotions = new List<OptimizableMotion>();
-            
-            foreach (var motion in motions)
-            {
-                optimizableMotions.Add(new OptimizableMotion(motion));
-            }
-            
+            var optimizableMotions = motions
+                .Zip(motionsAtHalfSpeed, (fullSpeed, halfSpeed) => new OptimizableMotion(fullSpeed, halfSpeed))
+                .ToList();
+
             return optimizableMotions;
         }
     }

@@ -55,6 +55,7 @@ namespace DeusXMachinaCommand.Operations
         public ITxOperation Optimize(ITxOperation operation, double limitDuration)
         {
             ITxOperation optimizedOperation = PrepareOperationForOptimization(operation);
+            _utilities.ModifyOperationSpeed(optimizedOperation, 100);
             
             _utilities.RunSimulationAndGetDurations(optimizedOperation);
             if (IsOverDurationLimit(optimizedOperation, limitDuration))
@@ -62,8 +63,12 @@ namespace DeusXMachinaCommand.Operations
                 optimizedOperation.Delete();
                 return null;
             }
+            
+            ITxOperation operationHalfSpeed = PrepareOperationForOptimization(operation);
+            _utilities.ModifyOperationSpeed(operationHalfSpeed, 50);
+            _utilities.RunSimulationAndGetDurations(operationHalfSpeed);
 
-            List<OptimizableMotion> sortedMotions = GetSortedOptimizableMotions(optimizedOperation);
+            List<OptimizableMotion> sortedMotions = GetSortedOptimizableMotions(optimizedOperation, operationHalfSpeed);
             
             // Two-pass optimization: first conservative (60%), then aggressive (45%)
             // to find the optimal balance between energy savings and time constraints
@@ -72,8 +77,24 @@ namespace DeusXMachinaCommand.Operations
             OptimizeMotionsWithVelocityTarget(sortedMotions, optimizedOperation, 
                 SecondPassTargetVelocity, limitDuration);
             
+            double savingsPercent = EstimateEnergySavingsPercent(sortedMotions, optimizedOperation);
+
             optimizedOperation.Name = $"En. optimal ({limitDuration:F2} s) {operation.Name}";
             return optimizedOperation;
+        }
+
+        private double EstimateEnergySavingsPercent(
+            List<OptimizableMotion> sortedMotions, 
+            ITxOperation operation)
+        {
+            double technicalMotionsDuration = operation.Duration - sortedMotions.Sum(m => m.Duration());
+            double technicalMotionsEnergy = technicalMotionsDuration *
+                                            EnergyOptimizationConstants.MinEnergyConsumption;
+            
+            double optimizedEnergy = sortedMotions.Sum(m => m.EstimateEnergyExpenditure()) + technicalMotionsEnergy;
+            double fullSpeedEnergy = sortedMotions.Sum(m => m.EstimateEnergyExpenditureAtFullSpeed()) + technicalMotionsEnergy;
+            
+            return 100 * (1 - optimizedEnergy / fullSpeedEnergy);
         }
 
         private ITxOperation PrepareOperationForOptimization(ITxOperation operation)
@@ -83,15 +104,21 @@ namespace DeusXMachinaCommand.Operations
             return duplicatedOperation;
         }
 
-        private List<OptimizableMotion> GetSortedOptimizableMotions(ITxOperation operation)
+        private List<OptimizableMotion> GetSortedOptimizableMotions(ITxOperation operation, ITxOperation operationHalfSpeed)
         {
             List<TxObjectList<ITxRoboticLocationOperation>> rawMotions = 
                 _utilities.GetMotions(operation);
+            
+            List<TxObjectList<ITxRoboticLocationOperation>> rawMotionsHalfSpeed = 
+                _utilities.GetMotions(operationHalfSpeed);
+            if (rawMotions.Count != rawMotionsHalfSpeed.Count)
+                throw new InvalidOperationException("Invalid optimization state: Motions at 50% speed not found.");
+            
             List<OptimizableMotion> optimizableMotions = 
-                _utilities.CreateOptimizableMotions(rawMotions);
+                _utilities.CreateOptimizableMotions(rawMotions, rawMotionsHalfSpeed);
             
             return optimizableMotions
-                .OrderByDescending(m => m.HeuristicScore)
+                .OrderByDescending(m => m.EnergyDemandScore) 
                 .ToList();
         }
 

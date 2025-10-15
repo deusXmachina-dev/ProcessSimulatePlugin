@@ -24,6 +24,9 @@ namespace DeusXMachinaCommand.Forms
 				{
 					MessageBox.Show($@"No optimization found within the duration limit of {_durationInput.Value}.", @"Optimization Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
+				
+				// todo: retrieve energy savings for the optimization and display this along with the information
+				//   about the optimized operation
 			}
 		}
 		
