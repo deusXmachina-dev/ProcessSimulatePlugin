@@ -98,6 +98,8 @@ There’s a lot of room to make this smarter, faster, and more tailored to your 
 4. Compare **energy savings** vs. baseline  
 5. **Profitzzz** – *"corporate just orgasmed"*
 
+📖 **Need detailed instructions?** Check out the [Technical Documentation](TECHNICAL.md) for installation, usage, and troubleshooting.
+
 ---
 
 ## Why Open Source?
