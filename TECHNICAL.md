@@ -11,6 +11,10 @@ This should help you get up and running in no time.
 
 ### Installation Steps
 
+Note that the installer might be getting blocked by Windows SmartScreen - we currently cannot justify spending $500 for code signing certificate on an open source project.
+
+If this is an issue, you can use the [alternative installation method](#alternative-installation-method), or you can build the installer from scratch by running `cmd /c Build_All.bat`.
+
 1. **Download the Installer**
    - Download `DeusXMachinaCommand_Setup_{version}.exe` from the [releases page](https://github.com/deusXmachina-dev/ProcessSimulatePlugin/releases)
 
@@ -20,7 +24,7 @@ This should help you get up and running in no time.
 #### Alternative installation method
 
 1. **Download the assembly directly**
-   - Download `DeusXMachinaCommand.dll` from the [releases page](https://github.com/deusXmachina-dev/ProcessSimulatePlugin/releases)
+   - Download `DeusXMachinaCommand.dll` from the [releases page](https://github.com/deusXmachina-dev/ProcessSimulatePlugin/releases) - or build from source
 
 2. **Run `CommandReg.exe`**
    - `CommandReg.exe` is installed with your PS and should be available in your PS install directory (e.g.: `C:\Program Files\Tecnomatix_2502\eMPower\CommandReg.exe`)
@@ -68,11 +72,11 @@ We are working on making this run in the line simulation mode and with signals a
 
 ### Windows Uninstall
 
-Use windows uninstall if you used the standard installation path - search for DeusXMachinaCommand among the programs.
+Use windows uninstall if you used the [standard installation method](#installation-steps) - search for DeusXMachinaCommand among the programs.
 
 ### Command unregister
 
-Use this only if you used `CommandReg.exe` for the installation.
+Use this only if you used the [alternative installation method](#alternative-installation-method) with `CommandReg.exe`.
 
 1. Open `CommandReg.exe`
 2. Follow the UI to unregister the command
