@@ -84,12 +84,12 @@ Use this only if you used `CommandReg.exe` for the installation.
 
 ### Common Issues
 
-Please let us know if you encounter issues. We'll be very happy to help you get going and collect feedback and fix issues as soon as they are encountered.
+Please let us know if you encounter issues. We'll be very happy to help you get going and fix any issues as soon as they are discovered.
 
 ---
 
 ## Support
 
 For issues, questions, or feedback:
-- Open an issue on [GitHub](https://github.com/your-repo/issues)
+- Open an issue on [GitHub](https://github.com/deusXmachina-dev/ProcessSimulatePlugin/issues)
 - Also feel free to contact us through [deusxmachina.dev](https://deusxmachina.dev/)
