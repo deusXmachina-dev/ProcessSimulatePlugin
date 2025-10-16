@@ -2,7 +2,10 @@
 ; Tecnomatix eMPower Plugin Installer
 
 #define MyAppName "DeusXMachinaCommand"
-#define MyAppVersion "1.0.0.0"
+; Version can be overridden by build script via /DMyAppVersion=x.x.x
+#ifndef MyAppVersion
+  #define MyAppVersion "0.1.1"
+#endif
 #define MyAppPublisher "SenseFlow, Inc."
 #define MyAppURL "https://deusxmachina.dev/"
 

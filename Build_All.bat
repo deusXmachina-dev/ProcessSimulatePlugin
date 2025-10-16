@@ -35,8 +35,20 @@ if not exist "%SLN%" (
   exit /b 1
 )
 
+REM Extract version from git tag first (needed for MSBuild)
+for /f "tokens=*" %%i in ('git describe --tags --abbrev=0 2^>nul') do set GIT_TAG=%%i
+if not defined GIT_TAG (
+  echo WARNING: No git tag found, using default version
+  set GIT_TAG=0.1.1
+) else (
+  REM Remove 'v' prefix if present (e.g., v0.1.1 -> 0.1.1)
+  set GIT_TAG=%GIT_TAG:v=%
+)
+echo Using version: %GIT_TAG%
+echo.
+
 echo Building solution in Release...
-"%MSBUILD_EXE%" "%SLN%" /t:Rebuild /p:Configuration=Release /m /v:minimal
+"%MSBUILD_EXE%" "%SLN%" /t:Rebuild /p:Configuration=Release /p:Version=%GIT_TAG% /m /v:minimal
 if errorlevel 1 (
   echo.
   echo ERROR: MSBuild failed.
@@ -69,7 +81,7 @@ set "OUTPUT_DIR=DeusXMachinaCommand\installer_output"
 if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"
 
 echo Building installer...
-"%INNO_EXE%" "DeusXMachinaCommand_Setup.iss"
+"%INNO_EXE%" "DeusXMachinaCommand_Setup.iss" /DMyAppVersion=%GIT_TAG%
 if errorlevel 1 (
   echo.
   echo ERROR: Installer build failed.
