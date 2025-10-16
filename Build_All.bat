@@ -36,13 +36,17 @@ if not exist "%SLN%" (
 )
 
 REM Extract version from git tag first (needed for MSBuild)
-for /f "tokens=*" %%i in ('git describe --tags --abbrev=0 2^>nul') do set GIT_TAG=%%i
-if not defined GIT_TAG (
+set GIT_TAG=
+for /f "delims=" %%i in ('git describe --tags --abbrev^=0 2^>nul') do set GIT_TAG=%%i
+if "%GIT_TAG%"=="" (
   echo WARNING: No git tag found, using default version
   set GIT_TAG=0.1.1
 ) else (
+  echo Found git tag: %GIT_TAG%
   REM Remove 'v' prefix if present (e.g., v0.1.1 -> 0.1.1)
-  set GIT_TAG=%GIT_TAG:v=%
+  if "%GIT_TAG:~0,1%"=="v" (
+    set GIT_TAG=%GIT_TAG:~1%
+  )
 )
 echo Using version: %GIT_TAG%
 echo.
