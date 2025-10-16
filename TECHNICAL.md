@@ -37,15 +37,15 @@ We advise adding the pluggin to the ribbon when you first start process simulate
 To see that the plugin was successfuly installed click Ctrl+f in a process simulate study and type `DXM`, you should see that the plugin was found:
 
   
-![DXM Plugin Found Example](ReadmeScreenshots\not-on-ribbon.png)
+![DXM Plugin Found Example](ReadmeScreenshots/not-on-ribbon.png)
 
 To add the command to the ribbon:
 
 1. Right click on the ribbon and select Customize the ribbon
 2. Search for the command and add it to a group on your ribbon
 
-![Customize Ribbon](ReadmeScreenshots\customize-ribbon.png)
-![Add Plugin to Ribbon](ReadmeScreenshots\add-plugin-to-ribbon.png)
+![Customize Ribbon](ReadmeScreenshots/customize-ribbon.png)
+![Add Plugin to Ribbon](ReadmeScreenshots/add-plugin-to-ribbon.png)
 
 
 ### Basic Workflow
