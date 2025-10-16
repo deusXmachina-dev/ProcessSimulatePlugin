@@ -16,8 +16,6 @@
     <TecnomatixDir Condition="'$(TecnomatixDir)' == ''">C:\Program Files\Tecnomatix_2502\eMPower</TecnomatixDir>
     <!-- Version - can be overridden from build script via /p:Version=x.x.x -->
     <Version Condition="'$(Version)' == ''">0.1.1</Version>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,4 +99,22 @@
     <EmbeddedResource Include="logo_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <!-- Update AssemblyInfo.cs with version before build - this makes sure that version can be overridden from build script based on git tag -->
+  <Target Name="UpdateAssemblyInfo" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <AssemblyInfoFile>$(ProjectDir)Properties\AssemblyInfo.cs</AssemblyInfoFile>
+      <VersionWithBuild>$(Version).0</VersionWithBuild>
+    </PropertyGroup>
+    <ItemGroup>
+      <AssemblyInfoContent Include="$([System.IO.File]::ReadAllText($(AssemblyInfoFile)))" />
+    </ItemGroup>
+    <PropertyGroup>
+      <UpdatedContent>@(AssemblyInfoContent)</UpdatedContent>
+      <UpdatedContent>$([System.Text.RegularExpressions.Regex]::Replace($(UpdatedContent), 'AssemblyVersion\(&quot;.*?&quot;\)', 'AssemblyVersion(&quot;$(VersionWithBuild)&quot;)'))</UpdatedContent>
+      <UpdatedContent>$([System.Text.RegularExpressions.Regex]::Replace($(UpdatedContent), 'AssemblyFileVersion\(&quot;.*?&quot;\)', 'AssemblyFileVersion(&quot;$(VersionWithBuild)&quot;)'))</UpdatedContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(AssemblyInfoFile)" Lines="$(UpdatedContent)" Overwrite="true" />
+    <Message Importance="high" Text="Updated AssemblyInfo.cs to version $(VersionWithBuild)" />
+  </Target>
 </Project>
