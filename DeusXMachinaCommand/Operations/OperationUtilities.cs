@@ -63,13 +63,20 @@ namespace DeusXMachinaCommand.Operations
                 try
                 {
                     var simPlayer = TxApplication.ActiveDocument.SimulationPlayer;
+                    
                     if (simPlayer == null)
                         throw new InvalidOperationException("Simulation player is not available.");
 
+                    simPlayer.OperationEndedForward += OperationDoneObserver;
+                    
                     simPlayer.Rewind();
                     TxApplication.ActiveDocument.CurrentOperation = operation;
-                    simPlayer.PlaySilently();
-                    simPlayer.Rewind();
+                    simPlayer.JumpSimulationToTime(50, false, TxSimulationPlayerSource.CurrentPlayer);
+                    simPlayer.JumpSimulationToTime(100, false, TxSimulationPlayerSource.CurrentPlayer);
+                    simPlayer.JumpSimulationToTime(500, false, TxSimulationPlayerSource.CurrentPlayer);
+                    // simPlayer.Rewind();
+                    
+                    simPlayer.OperationEndedForward -= OperationDoneObserver;
                 }
                 finally
                 {
@@ -82,6 +89,19 @@ namespace DeusXMachinaCommand.Operations
             }
         }
 
+        private void OperationDoneObserver(object sender, TxSimulationPlayer_OperationEndedForwardEventArgs args)
+        {
+            if (args.Operation is TxGenericRoboticOperation)
+            {
+                double? t = (sender as TxSimulationPlayer)?.CurrentTime;
+
+                if (t > 100)
+                {
+                    (sender as TxSimulationPlayer).Stop();
+                }
+            }
+        }
+        
         /// <summary>
         /// Sets the joint speed parameter for all joint motions within the operation tree.
         /// </summary>

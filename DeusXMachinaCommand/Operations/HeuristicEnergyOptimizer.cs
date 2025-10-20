@@ -54,6 +54,10 @@ namespace DeusXMachinaCommand.Operations
         /// </summary>
         public EnergyOptimizationResult Optimize(ITxOperation operation, double limitDuration)
         {
+            _utilities.RunSimulationAndGetDurations(operation);
+            return null;
+            
+            
             ITxOperation optimizedOperation = PrepareOperationForOptimization(operation);
             _utilities.ModifyOperationSpeed(optimizedOperation, 100);
             
