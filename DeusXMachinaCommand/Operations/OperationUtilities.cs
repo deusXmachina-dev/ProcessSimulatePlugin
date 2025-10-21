@@ -73,7 +73,8 @@ namespace DeusXMachinaCommand.Operations
                 }
                 finally
                 {
-                    TxApplication.ActiveDocument.CurrentOperation = originalCurrentOperation;
+                    if (originalCurrentOperation != null)
+                        TxApplication.ActiveDocument.CurrentOperation = originalCurrentOperation;
                 }
             }
             catch (Exception ex)
@@ -130,9 +131,16 @@ namespace DeusXMachinaCommand.Operations
                     currentMotion = new TxObjectList<ITxRoboticLocationOperation>();
                 }
                 
-                bool isJointMovement = _rcsService.GetLocationMotionType(currentLoc) == TxMotionType.Joint;
-
-                if (isJointMovement && currentLoc is TxRoboticViaLocationOperation)
+                if (IsTechnicalOperation(currentLoc))
+                {
+                    // we only want to include linear movements and non-via operations as the start of the next motion
+                    if (currentMotion.Count > 0)
+                    {
+                        motions.Add(currentMotion);
+                        currentMotion = new TxObjectList<ITxRoboticLocationOperation>();
+                    }
+                }
+                else
                 {
                     // if the current motion already has some operations, just add the current one
                     if (currentMotion.Count > 0)
@@ -144,14 +152,6 @@ namespace DeusXMachinaCommand.Operations
                     {
                         currentMotion.Add(previousLoc);
                         currentMotion.Add(currentLoc);
-                    }
-                }
-                else // we only want to include linear movements and non-via operations as the start of the next motion
-                {
-                    if (currentMotion.Count > 0)
-                    {
-                        motions.Add(currentMotion);
-                        currentMotion = new TxObjectList<ITxRoboticLocationOperation>();
                     }
                 }
             }
@@ -184,6 +184,21 @@ namespace DeusXMachinaCommand.Operations
                 .ToList();
 
             return optimizableMotions;
+        }
+        
+        public double GetTechnicalOperationsDuration(ITxOperation operation)
+        {
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
+
+            TxObjectList<ITxRoboticLocationOperation> locations = GetLocationOperations(operation);
+            return locations.Where(IsTechnicalOperation).Sum(loc => loc.Duration);
+        }
+            
+        private bool IsTechnicalOperation(ITxRoboticLocationOperation operation)
+        {
+            bool isJointMovement = _rcsService.GetLocationMotionType(operation) == TxMotionType.Joint;
+            return !(isJointMovement && operation is TxRoboticViaLocationOperation);
         }
     }
 }

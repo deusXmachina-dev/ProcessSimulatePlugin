@@ -89,7 +89,7 @@ namespace DeusXMachinaCommand.Operations
             List<OptimizableMotion> sortedMotions, 
             ITxOperation operation)
         {
-            double technicalMotionsDuration = operation.Duration - sortedMotions.Sum(m => m.Duration());
+            double technicalMotionsDuration = _utilities.GetTechnicalOperationsDuration(operation);
             double technicalMotionsEnergy = technicalMotionsDuration *
                                             EnergyOptimizationConstants.MinEnergyConsumption;
             

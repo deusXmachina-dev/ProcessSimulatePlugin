@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // NOTE: Version is set in the .csproj file and can be overridden at build time
 // via /p:Version=x.x.x parameter. The version is injected during build.
-[assembly: AssemblyVersion("0.4.0.0")]
-[assembly: AssemblyFileVersion("0.4.0.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]
